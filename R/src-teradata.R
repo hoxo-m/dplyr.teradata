@@ -41,25 +41,6 @@ src_desc.src_teradata <- function(x) {
   sprintf("Teradata %s [%s@%s/%s]", dbms_ver, x$user, server_name, x$dbname)
 }
 
-#' @export
-sql_translate_env.TeradataODBCConnection <- function(con) {
-  sql_variant(
-    base_scalar,
-    sql_translator(.parent = base_agg,
-                   n = function() sql("count(*)"),
-                   cor = sql_prefix("corr"),
-                   cov = sql_prefix("covar_samp"),
-                   sd = sql_prefix("stddev_samp"),
-                   var = sql_prefix("var_samp"),
-                   all = sql_prefix("bool_and"),
-                   any = sql_prefix("bool_or"),
-                   paste = function(x, collapse) build_sql("string_agg(", x, ", ", collapse, ")"),
-                   case_when = case_when_teradata
-    ),
-    base_win
-  )
-}
-
 # ODBC methods ------------------------------------------------------------
 
 #' @importFrom RODBC sqlQuery
@@ -123,6 +104,25 @@ db_query_fields.TeradataODBCConnection <- function (con, sql, ...)
   qry <- sqlQuery(con, fields)
 
   colnames(qry)
+}
+
+#' @export
+sql_translate_env.TeradataODBCConnection <- function(con) {
+  sql_variant(
+    base_scalar,
+    sql_translator(.parent = base_agg,
+                   n = function() sql("count(*)"),
+                   cor = sql_prefix("corr"),
+                   cov = sql_prefix("covar_samp"),
+                   sd = sql_prefix("stddev_samp"),
+                   var = sql_prefix("var_samp"),
+                   all = sql_prefix("bool_and"),
+                   any = sql_prefix("bool_or"),
+                   paste = function(x, collapse) build_sql("string_agg(", x, ", ", collapse, ")"),
+                   case_when = case_when_teradata
+    ),
+    base_win
+  )
 }
 
 # SQL generic -------------------------------------------------------------
