@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 .Rprofile
+tests/testthat/test-my_*
