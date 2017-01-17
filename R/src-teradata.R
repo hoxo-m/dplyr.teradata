@@ -12,8 +12,9 @@ src_teradata <- function(dbname = NULL, host = NULL, port = NULL, user = NULL,
   if (password == "" && isAvailable()) {
     password <- askForPassword("Input Password for Teradata")
   }
-  connection <- sprintf("Driver=Teradata;DBCName=%s;UID=%s;PWD=%s", host, user, password)
-  con <- odbcDriverConnect(connection, case = case, readOnlyOptimize = TRUE)
+  # connection <- sprintf("Driver=Teradata;DBCName=%s;UID=%s;PWD=%s;CharacterSet=UTF8;", host, user, password)
+  connection <- sprintf("Driver=Teradata;DBCName=%s;Database=CUSTOMER;UID=%s;PWD=%s;", host, user, password)
+  con <- odbcDriverConnect(connection, DBMSencoding = "utf-8", readOnlyOptimize = TRUE)
   attr(con, "user") <- user
   attr(con, "dbname") <- dbname
   class(con) <- c("TeradataODBCConnection", class(con))
@@ -26,9 +27,16 @@ src_teradata <- function(dbname = NULL, host = NULL, port = NULL, user = NULL,
 #' @rdname src_teradata
 tbl.src_teradata <- function(src, from, ...) {
   table_names <- db_list_tables(src$con)
-  pattern <- sprintf("\\b(%s)\\b", paste(table_names, collapse = "|"))
   replace <- sprintf("%s.\\1", src$dbname)
-  from <- gsub(pattern, replace, from)
+  if (length(table_names) < 400) {
+    pattern <- sprintf("\\b(%s)\\b", paste(table_names, collapse = "|"))
+    from <- gsub(pattern, replace, from)
+  } else {
+    for (table_name in table_names) {
+      pattern <- sprintf("\\b(%s)\\b", table_name)
+      from <- gsub(pattern, replace, from)
+    }
+  }
   tbl_sql("teradata", src = src, from = sql(from), ...)
 }
 

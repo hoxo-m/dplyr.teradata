@@ -149,7 +149,11 @@ db_disconnector <- function(con, name, quiet = FALSE) {
       message("Auto-disconnecting ", name, " connection ",
               "(", paste(con[1], collapse = ", "), ")")
     }
-    odbcClose(con)
+    tryCatch({
+      odbcClose(con)
+    }, error = function(e) {
+      message("Already closed.")
+    })
   })
   environment()
 }
