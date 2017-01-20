@@ -16,22 +16,3 @@ print.tbl_teradata <- function(x, ..., n = NULL, width = NULL) {
 
   invisible(x)
 }
-
-#' @importFrom RODBC sqlQuery sqlClear sqlFetch
-#' @importFrom assertthat assert_that
-#' @export
-collect.tbl_teradata <- function(x, ..., n = 1e+05, warn_incomplete = TRUE)  {
-  assert_that(length(n) == 1, n > 0L)
-  if (n == Inf) {
-    n <- -1
-  }
-  sql <- sql_render(x)
-  out <- sqlQuery(x$src$con, sql, rows_at_time = n)
-
-  # if (warn_incomplete) {
-  #   res_warn_incomplete(out, "n = Inf")
-  # }
-
-  vars <- Filter(Negate(is_numeric_group), groups(x))
-  grouped_df(out, vars = vars)
-}

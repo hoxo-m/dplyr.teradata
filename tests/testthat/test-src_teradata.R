@@ -1,7 +1,6 @@
 context("src_teradata")
 
 TEST_TABLE <- Sys.getenv("TD_TEST_TABLE")
-on.exit(RODBC::odbcCloseAll())
 
 test_that("Create src object", {
   skip_on_cran()

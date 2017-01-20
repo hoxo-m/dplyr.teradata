@@ -11,7 +11,8 @@ Depends:
     dplyr
 Imports:
     assertthat,
-    RODBC,
+    rJava,
+    RJDBC,
     rstudioapi
 RoxygenNote: 5.0.1
 Suggests: testthat

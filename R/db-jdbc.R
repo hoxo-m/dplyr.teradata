@@ -1,24 +1,23 @@
+#' @import RJDBC
+NULL
 
 #' @export
-db_list_tables.RODBC <- function(con) {
-  # dbListTables(con)
-  stop("Unimplemented")
+db_list_tables.JDBCConnection <- function(con) {
+  dbListTables(con)
 }
 
 #' @export
-db_has_table.RODBC <- function(con, table) {
-  # dbExistsTable(con, table)
-  stop("Unimplemented")
+db_has_table.JDBCConnection <- function(con, table) {
+  dbExistsTable(con, table)
 }
 
 #' @export
-db_data_type.RODBC <- function(con, fields) {
-  # vapply(fields, dbDataType, dbObj = con, FUN.VALUE = character(1))
-  stop("Unimplemented")
+db_data_type.JDBCConnection <- function(con, fields) {
+  vapply(fields, dbDataType, dbObj = con, FUN.VALUE = character(1))
 }
 
 #' @export
-db_save_query.RODBC <- function(con, sql, name, temporary = TRUE, ...) {
+db_save_query.JDBCConnection <- function(con, sql, name, temporary = TRUE, ...) {
   # tt_sql <- build_sql("CREATE ", if (temporary) sql("TEMPORARY "),
   #                     "TABLE ", ident(name), " AS ", sql, con = con)
   # dbGetQuery(con, tt_sql)
@@ -27,25 +26,25 @@ db_save_query.RODBC <- function(con, sql, name, temporary = TRUE, ...) {
 }
 
 #' @export
-db_begin.RODBC <- function(con, ...) {
+db_begin.JDBCConnection <- function(con, ...) {
   # dbBegin(con)
   stop("Unimplemented")
 }
 
 #' @export
-db_commit.RODBC <- function(con, ...) {
+db_commit.JDBCConnection <- function(con, ...) {
   # dbCommit(con)
   stop("Unimplemented")
 }
 
 #' @export
-db_rollback.RODBC <- function(con, ...) {
+db_rollback.JDBCConnection <- function(con, ...) {
   # dbRollback(con)
   stop("Unimplemented")
 }
 
 #' @export
-db_create_table.RODBC <- function(con, table, types, temporary = FALSE, ...) {
+db_create_table.JDBCConnection <- function(con, table, types, temporary = FALSE, ...) {
   # assert_that(is.string(table), is.character(types))
   #
   # field_names <- escape(ident(names(types)), collapse = NULL, con = con)
@@ -59,12 +58,12 @@ db_create_table.RODBC <- function(con, table, types, temporary = FALSE, ...) {
 }
 
 #' @export
-db_insert_into.RODBC <- function(con, table, values, ...) {
+db_insert_into.JDBCConnection <- function(con, table, values, ...) {
   stop("Unimplemented")
 }
 
 #' @export
-db_create_indexes.RODBC <- function(con, table, indexes = NULL, unique = FALSE, ...) {
+db_create_indexes.JDBCConnection <- function(con, table, indexes = NULL, unique = FALSE, ...) {
   # if (is.null(indexes)) return()
   # assert_that(is.list(indexes))
   #
@@ -75,7 +74,7 @@ db_create_indexes.RODBC <- function(con, table, indexes = NULL, unique = FALSE, 
 }
 
 #' @export
-db_create_index.RODBC <- function(con, table, columns, name = NULL, unique = FALSE, ...) {
+db_create_index.JDBCConnection <- function(con, table, columns, name = NULL, unique = FALSE, ...) {
   # assert_that(is.string(table), is.character(columns))
   #
   # name <- name %||% paste0(c(table, columns), collapse = "_")
@@ -90,7 +89,7 @@ db_create_index.RODBC <- function(con, table, columns, name = NULL, unique = FAL
 }
 
 #' @export
-db_drop_table.RODBC <- function(con, table, force = FALSE, ...) {
+db_drop_table.JDBCConnection <- function(con, table, force = FALSE, ...) {
   # sql <- build_sql("DROP TABLE ", if (force) sql("IF EXISTS "), ident(table),
   #                  con = con)
   # dbGetQuery(con, sql)
@@ -98,14 +97,14 @@ db_drop_table.RODBC <- function(con, table, force = FALSE, ...) {
 }
 
 #' @export
-db_analyze.RODBC <- function(con, table, ...) {
+db_analyze.JDBCConnection <- function(con, table, ...) {
   # sql <- build_sql("ANALYZE ", ident(table), con = con)
   # dbGetQuery(con, sql)
   stop("Unimplemented")
 }
 
 #' @export
-db_explain.RODBC <- function(con, sql, ...) {
+db_explain.JDBCConnection <- function(con, sql, ...) {
   # exsql <- build_sql("EXPLAIN ", sql, con = con)
   # expl <- dbGetQuery(con, exsql)
   # out <- utils::capture.output(print(expl))
@@ -115,18 +114,14 @@ db_explain.RODBC <- function(con, sql, ...) {
 }
 
 #' @export
-db_query_fields.RODBC <- function(con, sql, ...) {
-  # sql <- sql_select(con, sql("*"), sql_subquery(con, sql), where = sql("0 = 1"))
-  # qry <- dbSendQuery(con, sql)
-  # on.exit(dbClearResult(qry))
-  #
-  # res <- dbFetch(qry, 0)
-  # names(res)
-  stop("Unimplemented")
+db_query_fields.JDBCConnection <- function(con, sql, ...) {
+  sql <- sql_select(con, sql("*"), sql_subquery(con, sql), where = sql("0 = 1"))
+  res <- dbGetQuery(con, sql)
+  names(res)
 }
 
 #' @export
-db_query_rows.RODBC <- function(con, sql, ...) {
+db_query_rows.JDBCConnection <- function(con, sql, ...) {
   # from <- sql_subquery(con, sql, "master")
   # rows <- build_sql("SELECT count(*) FROM ", from, con = con)
   #
@@ -136,34 +131,20 @@ db_query_rows.RODBC <- function(con, sql, ...) {
 
 # Utility functions -------------------------------------------------------
 
-# random_table_name <- function(n = 10) {
-#   paste0(sample(letters, n, replace = TRUE), collapse = "")
-# }
-#
-# # Creates an environment that disconnects the database when it's
-# # garbage collected
-# #' @importFrom RODBC odbcClose
-# db_disconnector <- function(con, name, quiet = FALSE) {
-#   reg.finalizer(environment(), function(...) {
-#     if (!quiet) {
-#       message("Auto-disconnecting ", name, " connection ",
-#               "(", paste(con[1], collapse = ", "), ")")
-#     }
-#     tryCatch({
-#       odbcClose(con)
-#     }, error = function(e) {
-#       message("Already closed.")
-#     })
-#   })
-#   environment()
-# }
-#
-# res_warn_incomplete <- function(res, hint = "n = -1") {
-#   # if (dbHasCompleted(res)) return()
-#   #
-#   # rows <- big_mark(dbGetRowCount(res))
-#   # warning("Only first ", rows, " results retrieved. Use ", hint, " to retrieve all.",
-#   #         call. = FALSE)
-#   stop("Unimplemented")
-# }
-#
+random_table_name <- function(n = 10) {
+  paste0(sample(letters, n, replace = TRUE), collapse = "")
+}
+
+# Creates an environment that disconnects the database when it's
+# garbage collected
+#' @importFrom RJDBC dbDisconnect
+db_disconnector <- function(con, name, quiet = FALSE) {
+  reg.finalizer(environment(), function(...) {
+    if (!quiet) {
+      message("Auto-disconnecting ", name, " connection ",
+              "(", paste("??", collapse = ", "), ")")
+    }
+    dbDisconnect(con)
+  })
+  environment()
+}

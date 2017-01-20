@@ -6,7 +6,8 @@
 \title{Connect to Teradata.}
 \usage{
 src_teradata(dbname = NULL, host = NULL, port = NULL, user = NULL,
-  password = NULL, case = FALSE, ...)
+  password = NULL, charset = c("UTF8", "ASCII", "UTF16"),
+  tmode = c("ANSI", "TERA"))
 
 \method{tbl}{src_teradata}(src, from, ...)
 }
