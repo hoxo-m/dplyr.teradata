@@ -10,8 +10,16 @@ LazyData: true
 Depends:
     dplyr
 Imports:
-    assertthat,
+    DBI,
     RODBC,
-    rstudioapi
+    assertthat,
+    methods,
+    rstudioapi,
+    stats
 RoxygenNote: 5.0.1
-Suggests: testthat
+Suggests:
+    RJDBC,
+    fixer,
+    odbc,
+    rJava,
+    testthat

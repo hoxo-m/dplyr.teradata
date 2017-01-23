@@ -17,21 +17,54 @@ print.tbl_teradata <- function(x, ..., n = NULL, width = NULL) {
   invisible(x)
 }
 
-#' @importFrom RODBC sqlQuery sqlClear sqlFetch
 #' @importFrom assertthat assert_that
+#' @importFrom RODBC sqlQuery
 #' @export
-collect.tbl_teradata <- function(x, ..., n = 1e+05, warn_incomplete = TRUE)  {
+collect.tbl_teradata <- function(x, ..., n = Inf, warn_incomplete = TRUE)  {
   assert_that(length(n) == 1, n > 0L)
   if (n == Inf) {
-    n <- -1
+    n <- 0
   }
   sql <- sql_render(x)
-  out <- sqlQuery(x$src$con, sql, rows_at_time = n)
 
-  # if (warn_incomplete) {
-  #   res_warn_incomplete(out, "n = Inf")
-  # }
+  explain_text <- db_explain(x$src$con, sql)
+  pattern <- "((\\d|,)+[[:space:]]+hours[[:space:]]+and[[:space:]]+\\d+[[:space:]]+minutes?)"
+  if (grepl(pattern, explain_text)) {
+    m <- gregexpr(pattern, explain_text)
+    estimated_time_text <- regmatches(explain_text, m)[[1]]
+    print(estimated_time_text)
+    estimated_time_text <- estimated_time_text[length(estimated_time_text)]
+    estimated_time_text <- gsub("[[:space:]]+", " ", estimated_time_text)
+    message(sprintf("Attention! The estimated execution time is %s.", estimated_time_text))
+    if (grepl(",", estimated_time_text)) {
+      message("To specify select column instead of * may shorten the time.")
+    }
+    prompt <- "Do you want to send the query? [N/y]  "
+    answer <- substr(readline(prompt), 1L, 1L)
+    if (!(answer %in% c("y", "Y"))) {
+      message("Cancelled by user\n")
+      return(invisible(NULL))
+    }
+  }
 
-  vars <- Filter(Negate(is_numeric_group), groups(x))
-  grouped_df(out, vars = vars)
+  out <- sqlQuery(x$src$con, sql, max = n, stringsAsFactors = FALSE, ...)
+
+  grouped_df(out, groups(x))
+}
+
+# SQL render --------------------------------------------------------------
+
+#' @export
+sql_render.tbl_teradata <- function(query, con = NULL, ...) {
+  sql <- sql_render(sql_build(query$ops, query$src$con, ...), con = query$src$con, ...)
+  if (sql %in% db_list_tables(query$src$con)) {
+    sql <- sprintf("SELECT * FROM %s", sql)
+  }
+  to_teradata_sql(sql)
+}
+
+# Utility Functions -------------------------------------------------------
+
+to_teradata_sql <- function(sql) {
+  gsub("\\bLIMIT\\b", "SAMPLE", sql)
 }

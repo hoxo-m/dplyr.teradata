@@ -6,11 +6,37 @@
 \title{Connect to Teradata.}
 \usage{
 src_teradata(dbname = NULL, host = NULL, port = NULL, user = NULL,
-  password = NULL, case = FALSE, ...)
+  password = NULL, charset = c("UTF8", "ASCII", "UTF16"),
+  tmode = c("ANSI", "TERA"), type = c("odbc", "odbc2", "jdbc"))
 
 \method{tbl}{src_teradata}(src, from, ...)
 }
+\arguments{
+\item{dbname}{Database name}
+
+\item{host}{Host name of database}
+
+\item{port}{Don't use}
+
+\item{user, password}{User name and password (if needed)}
+
+\item{charset}{\code{"UTF8"}(default), \code{"ASCII"} or \code{"UTF16"}. Specify character set.}
+
+\item{tmode}{\code{"ANSI"}(default) or \code{"TERA"}. Specify TMODE.}
+
+\item{type}{\code{"odbc"}(deafult), \code{"odbc2"} or \code{"jdbc"}. Specify connection type. See detail.}
+
+\item{src}{a Teradata src created with \code{src_teradata}.}
+
+\item{from}{Either a string giving the name of table in database, or
+\code{\link{sql}} described a derived table or compound join.}
+
+\item{...}{Included for compatibility with the generic, but otherwise ignored.}
+}
 \description{
-Connect to Teradata.
+Use \code{src_teradata} to connect to an existing Teradata database,
+and \code{tbl} to connect to tables within that database.
+If you're connecting to a remote database,
+ask your database administrator for the values of these variables.
 }
 
