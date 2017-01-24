@@ -37,7 +37,7 @@ collect.tbl_teradata <- function(x, ..., n = Inf, warn_incomplete = TRUE)  {
     estimated_time_text <- gsub("[[:space:]]+", " ", estimated_time_text)
     message(sprintf("Attention! The estimated execution time is %s.", estimated_time_text))
     if (grepl(",", estimated_time_text)) {
-      message("To specify select column instead of * may shorten the time.")
+      message("To specify output column using select() may shorten the time.")
     }
     prompt <- "Do you want to send the query? [N/y]  "
     answer <- substr(readline(prompt), 1L, 1L)
@@ -49,7 +49,14 @@ collect.tbl_teradata <- function(x, ..., n = Inf, warn_incomplete = TRUE)  {
 
   out <- sqlQuery(x$src$con, sql, max = n, stringsAsFactors = FALSE, ...)
 
-  grouped_df(out, groups(x))
+  group_columns <- groups(x)
+  group_column_types <- vapply(group_columns, function(col) typeof(out[,as.character(col)]), character(1))
+  if ("list" %in% group_column_types) {
+    message("Cannot treat grouping by list type column in R. It is ungrouped.")
+    group_columns <- group_columns[group_column_types != "list"]
+  }
+
+  grouped_df(out, group_columns)
 }
 
 # SQL render --------------------------------------------------------------

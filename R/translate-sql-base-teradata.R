@@ -53,6 +53,32 @@ as_teradata <- function(x, type) {
 }
 assign("as", as_teradata, envir = base_scalar_teradata)
 
+extract <- function(date_column, target) {
+  build_sql("EXTRACT(", sql(target), " FROM ", date_column, ")")
+}
+
+year <- function(date_column) {
+  extract(date_column, "YEAR")
+}
+
+month <- function(date_column) {
+  extract(date_column, "MONTH")
+}
+
+day <- function(date_column) {
+  extract(date_column, "DAY")
+}
+
+assign("year", year, envir = base_scalar_teradata)
+assign("month", month, envir = base_scalar_teradata)
+assign("day", day, envir = base_scalar_teradata)
+
+not_equal <- function(x, y) {
+  build_sql(x, " <> ", y)
+}
+
+assign("!=", not_equal, envir = base_scalar_teradata)
+
 # as.character_teradata <- function(x) {
 #   build_sql("CAST(", x, " AS VARCHAR(255))")
 # }

@@ -11,10 +11,7 @@ db_list_tables.RODBC <- function(con) {
 #' @export
 db_has_table.RODBC <- function(con, table) {
   table <- tolower(table)
-  table_df <- sqlTables(con)
-  table_names <- tolower(table_df$TABLE_NAME)
-  table_schema <- tolower(table_df$TABLE_SCHEM)
-  table %in% c(table_names, paste(table_schema, table_names, sep="."))
+  table %in% tolower(db_list_tables(con))
 }
 
 #' @export

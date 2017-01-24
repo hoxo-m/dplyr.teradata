@@ -9,12 +9,9 @@ sql_subquery.TeradataODBCConnection <- function(con, from, name = NULL, ...) {
   if (is.null(name)) {
     name <- random_table_name()
   }
-  build_sql("(", from, ") AS ", ident(name), con = con)
-}
-
-#' @export
-sql_escape_ident.TeradataODBCConnection <- function(con, x) {
-  x
+  sql <- build_sql("(", from, ") AS ", ident(name), con = con)
+  attr(sql, "name") <- name
+  sql
 }
 
 #' @export
@@ -27,8 +24,18 @@ sql_join.TeradataODBCConnection <- function(con, x, y, type = "inner", by = NULL
                  stop("Unknown join type:", type, call. = FALSE)
   )
 
-  on <- sql_vector(paste0(sql_escape_ident(con, by$x), " = ", sql_escape_ident(con, by$y)),
-                   collapse = " AND ", parens = TRUE)
+  if (!is.null(attributes(x)$name)) {
+    by_x <- paste(attributes(x)$name, by$x, sep=".")
+  } else {
+    by_x <- sql_escape_ident(con, by$x)
+  }
+  if (!is.null(attributes(y)$name)) {
+    by_y <- paste(attributes(y)$name, by$y, sep=".")
+  } else {
+    by_y <- sql_escape_ident(con, by$y)
+  }
+
+  on <- sql_vector(paste0(by_x, " = ", by_y), collapse = " AND ", parens = TRUE)
   cond <- build_sql("ON ", on, con = con)
 
   # Wrap with SELECT since callers assume a valid query is returned
