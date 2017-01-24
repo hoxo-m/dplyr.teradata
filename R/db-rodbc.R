@@ -4,6 +4,7 @@
 #' @export
 db_list_tables.RODBC <- function(con) {
   table_df <- sqlTables(con)
+  check_odbc_error(table_df, con)
   paste(table_df$TABLE_SCHEM, table_df$TABLE_NAME, sep = ".")
 }
 
@@ -121,7 +122,8 @@ db_explain.RODBC <- function(con, sql, ...) {
 #' @export
 db_query_fields.RODBC <- function(con, sql, ...) {
   fields <- build_sql("SELECT * FROM ", sql_subquery(con, sql), " WHERE 0=1", con = con)
-  qry <- sqlQuery(con, fields)
+  qry <- sqlQuery(con, fields, errors = FALSE)
+  check_odbc_error(qry, con)
   colnames(qry)
 }
 
@@ -130,6 +132,17 @@ db_query_fields.RODBC <- function(con, sql, ...) {
 db_query_rows.RODBC <- function(con, sql, ...) {
   from <- sql_subquery(con, sql, "master")
   rows <- build_sql("SELECT count(*) FROM ", from, con = con)
+  qry <- sqlQuery(con, rows, errors = FALSE)
+  check_odbc_error(qry, con)
+  as.integer(qry[[1]])
+}
 
-  as.integer(sqlQuery(con, rows)[[1]])
+#' @importFrom RODBC odbcGetErrMsg
+check_odbc_error <- function(qry, con) {
+  if (is.integer(qry)) { # qry == -1
+    parent_call <- deparse(sys.call(which = 1))
+    message <- sprintf("Failed to query in: %s", parent_call)
+    error_messages <- odbcGetErrMsg(con)
+    stop(message, "\n", paste(error_messages, collapse = "\n"), call. = FALSE)
+  }
 }

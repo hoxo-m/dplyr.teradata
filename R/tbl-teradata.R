@@ -52,7 +52,7 @@ collect.tbl_teradata <- function(x, ..., n = Inf, warn_incomplete = TRUE)  {
   group_columns <- groups(x)
   group_column_types <- vapply(group_columns, function(col) typeof(out[,as.character(col)]), character(1))
   if ("list" %in% group_column_types) {
-    message("Cannot treat grouping by list type column in R. It is ungrouped.")
+    message("Cannot group by list type column in R. The result returns as plain data.frame.")
     group_columns <- group_columns[group_column_types != "list"]
   }
 

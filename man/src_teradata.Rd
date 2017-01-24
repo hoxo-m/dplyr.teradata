@@ -20,11 +20,11 @@ src_teradata(dbname = NULL, host = NULL, port = NULL, user = NULL,
 
 \item{user, password}{User name and password (if needed)}
 
-\item{charset}{\code{"UTF8"}(default), \code{"ASCII"} or \code{"UTF16"}. Specify character set.}
+\item{charset}{Character Set. \code{"UTF8"}(default), \code{"ASCII"} or \code{"UTF16"}.}
 
-\item{tmode}{\code{"ANSI"}(default) or \code{"TERA"}. Specify TMODE.}
+\item{tmode}{TMODE. \code{"ANSI"}(default) or \code{"TERA"}.}
 
-\item{type}{\code{"odbc"}(deafult), \code{"odbc2"} or \code{"jdbc"}. Specify connection type. See detail.}
+\item{type}{Connection Type. \code{"odbc"}(deafult), \code{"odbc2"} or \code{"jdbc"}. See detail.}
 
 \item{src}{a Teradata src created with \code{src_teradata}.}
 

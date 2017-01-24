@@ -1,5 +1,7 @@
 base_scalar_teradata <- as.environment(as.list(dplyr::base_scalar, all.names=TRUE))
 
+
+# if else -----------------------------------------------------------------
 sql_if_teradata <- function(cond, if_true, if_false = NULL) {
   build_sql(
     "CASE WHEN ", cond,
@@ -13,6 +15,7 @@ assign("if", sql_if_teradata, envir = base_scalar_teradata)
 assign("ifelse", sql_if_teradata, envir = base_scalar_teradata)
 assign("if_else", sql_if_teradata, envir = base_scalar_teradata)
 
+# case when ---------------------------------------------------------------
 #' @importFrom stats as.formula
 case_when_teradata <- function(...) {
   formulas <- list(...)
@@ -48,11 +51,7 @@ case_when_teradata <- function(...) {
 }
 assign("case_when", case_when_teradata, envir = base_scalar_teradata)
 
-as_teradata <- function(x, type) {
-  build_sql("CAST(", x, " AS ", sql(type), ")")
-}
-assign("as", as_teradata, envir = base_scalar_teradata)
-
+# extract -----------------------------------------------------------------
 extract <- function(date_column, target) {
   build_sql("EXTRACT(", sql(target), " FROM ", date_column, ")")
 }
@@ -73,13 +72,15 @@ assign("year", year, envir = base_scalar_teradata)
 assign("month", month, envir = base_scalar_teradata)
 assign("day", day, envir = base_scalar_teradata)
 
+# not equal ---------------------------------------------------------------
 not_equal <- function(x, y) {
   build_sql(x, " <> ", y)
 }
-
 assign("!=", not_equal, envir = base_scalar_teradata)
 
-# as.character_teradata <- function(x) {
-#   build_sql("CAST(", x, " AS VARCHAR(255))")
-# }
-# assign("as.character", as.character_teradata, envir = base_scalar_teradata)
+
+# cast --------------------------------------------------------------------
+as_teradata <- function(x, type) {
+  build_sql("CAST(", x, " AS ", sql(type), ")")
+}
+assign("as", as_teradata, envir = base_scalar_teradata)

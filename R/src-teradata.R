@@ -9,9 +9,9 @@
 #' @param host Host name of database
 #' @param port Don't use
 #' @param user,password User name and password (if needed)
-#' @param charset \code{"UTF8"}(default), \code{"ASCII"} or \code{"UTF16"}. Specify character set.
-#' @param tmode \code{"ANSI"}(default) or \code{"TERA"}. Specify TMODE.
-#' @param type \code{"odbc"}(deafult), \code{"odbc2"} or \code{"jdbc"}. Specify connection type. See detail.
+#' @param charset Character Set. \code{"UTF8"}(default), \code{"ASCII"} or \code{"UTF16"}.
+#' @param tmode TMODE. \code{"ANSI"}(default) or \code{"TERA"}.
+#' @param type Connection Type. \code{"odbc"}(deafult), \code{"odbc2"} or \code{"jdbc"}. See detail.
 #' @param src a Teradata src created with \code{src_teradata}.
 #' @param from Either a string giving the name of table in database, or
 #'   \code{\link{sql}} described a derived table or compound join.
@@ -66,13 +66,31 @@ src_teradata <- function(dbname = NULL, host = NULL, port = NULL, user = NULL,
   src_sql("teradata", con = con, info = info, disco = db_disconnector(con, "teradata"))
 }
 
+#' @export
+#' @rdname src_teradata
+tbl.src_teradata <- function(src, from, ...) {
+  tbl_sql("teradata", src = src, from = sql(from), ...)
+}
+
+#' @export
+src_desc.src_teradata <- function(x) {
+  info <- x$info
+  if (info$dbname == "") {
+    sprintf("Teradata %s [%s@%s]", info$td_version, info$user, info$host)
+  } else {
+    sprintf("Teradata %s [%s@%s/%s]", info$td_version, info$user, info$host, info$dbname)
+  }
+}
+
+
+# Utility Functions for Create Connection ---------------------------------
+
 #' @importFrom RODBC odbcDriverConnect odbcGetErrMsg
 create_RODBC_connection <- function(dbname, host, user, password, charset, tmode) {
   connection_string <- create_odbc_connection_string(dbname, host, user, password, charset, tmode)
   con <- odbcDriverConnect(connection_string)
   if (con == -1L) {
-    message("Connection failed.")
-    stop(odbcGetErrMsg(con))
+    stop(sprintf("Failed to establish connection: %s@%s/%s", user, host, dbname))
   }
   class(con) <- c("TeradataODBCConnection", class(con))
   con
@@ -137,10 +155,12 @@ if (requireNamespace("RJDBC")) {
   methods::setClass("TeradataJDBCConnection", contains="JDBCConnection")
 }
 
+# Utility Functions -------------------------------------------------------
+
 #' @importFrom RODBC odbcGetInfo
 #' @importFrom DBI dbGetQuery
 get_teradata_version <- function(con) {
-  td_version <- "??"
+  td_version <- "??.??.??.??"
   if (inherits(con, "RODBC")) {
     info <- odbcGetInfo(con)
     if ("DBMS_Ver" %in% names(info)) {
@@ -156,24 +176,6 @@ get_teradata_version <- function(con) {
   }
   td_version
 }
-
-#' @export
-#' @rdname src_teradata
-tbl.src_teradata <- function(src, from, ...) {
-  tbl_sql("teradata", src = src, from = sql(from), ...)
-}
-
-#' @export
-src_desc.src_teradata <- function(x) {
-  info <- x$info
-  if (info$dbname == "") {
-    sprintf("Teradata %s [%s@%s]", info$td_version, info$user, info$host)
-  } else {
-    sprintf("Teradata %s [%s@%s/%s]", info$td_version, info$user, info$host, info$dbname)
-  }
-}
-
-# Utility Functions -------------------------------------------------------
 
 # Creates an environment that disconnects the database when it's
 # garbage collected

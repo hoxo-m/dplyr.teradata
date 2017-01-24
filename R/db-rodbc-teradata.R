@@ -7,6 +7,7 @@ db_list_tables.TeradataODBCConnection <- function(con) {
     if (dbname != "") {
       query <- sprintf("SELECT TABLENAME FROM DBC.TABLES WHERE DATABASENAME = '%s'", dbname)
       qry <- sqlQuery(con, query)
+      check_odbc_error(qry, con)
       table_names <- gsub("\\s+", "", as.character(qry$TableName))
     } else {
       message("Getting all table names for all schema.")
@@ -28,6 +29,7 @@ db_explain.TeradataODBCConnection <- function(con, sql, format = "text", ...) {
     exsql <- build_sql("EXPLAIN ", sql)
   }
   expl <- sqlQuery(con, exsql)
+  check_odbc_error(expl, con)
   paste(expl[[1]], collapse = "\n")
 }
 
