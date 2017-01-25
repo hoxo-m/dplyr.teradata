@@ -16,7 +16,6 @@ assign("ifelse", sql_if_teradata, envir = base_scalar_teradata)
 assign("if_else", sql_if_teradata, envir = base_scalar_teradata)
 
 # case when ---------------------------------------------------------------
-#' @importFrom stats as.formula
 case_when_teradata <- function(...) {
   formulas <- list(...)
   n <- length(formulas)
@@ -27,21 +26,17 @@ case_when_teradata <- function(...) {
   value <- vector("list", n)
   for (i in seq_len(n)) {
     f <- formulas[[i]]
-    f <- gsub("=", "==", f)
-    f <- as.formula(f)
-    if (!inherits(f, "formula") || length(f) != 3) {
-      non_formula_arg <- substitute(list(...))[[i + 1]]
-      stop("Case ", i, " (", deparse(non_formula_arg),
-           ") is not a two-sided formula", call. = FALSE)
+    sides <- trimws(strsplit(f, "~")[[1]])
+    if (length(sides) != 2) {
+      stop("Case ", i, " (", f, ") is not a two-sided formula", call. = FALSE)
     }
-    env <- environment(f)
-    query[[i]] <- gsub("==", "=", deparse(f[[2]]))
-    value[[i]] <- eval(f[[3]], envir = env)
+    query[[i]] <- sql(sides[1])
+    value[[i]] <- sql(sides[2])
   }
   sql <- build_sql("CASE")
   for (i in seq_len(n)) {
     if (query[[i]] == "TRUE") break
-    sql <- build_sql(sql, " WHEN ", sql(query[[i]]), " THEN ", value[[i]])
+    sql <- build_sql(sql, " WHEN ", query[[i]], " THEN ", value[[i]])
   }
   if (query[[i]] == "TRUE") {
     sql <- build_sql(sql, " ELSE ", value[[i]])
@@ -84,3 +79,30 @@ as_teradata <- function(x, type) {
   build_sql("CAST(", x, " AS ", sql(type), ")")
 }
 assign("as", as_teradata, envir = base_scalar_teradata)
+
+
+# is not null -------------------------------------------------------------
+is_not_null <- function(x) {
+  build_sql("(", x, ") IS NOT NULL")
+}
+assign("is.notnull", is_not_null, envir = base_scalar_teradata)
+
+op_not <- function(..., na.rm) {
+  args <- list(...)
+  if (length(args) == 1) {
+    sql <- args[[1]]
+    if (endsWith(sql, "IS NULL")) {
+      return(gsub("IS NULL", "IS NOT NULL", sql))
+    }
+  }
+  base_scalar$`!`(..., na.rm)
+}
+assign("!", op_not, envir = base_scalar_teradata)
+
+
+# like --------------------------------------------------------------------
+
+like <- function(x, pattern) {
+  build_sql(x, " LIKE ", pattern)
+}
+assign("like", like, envir = base_scalar_teradata)

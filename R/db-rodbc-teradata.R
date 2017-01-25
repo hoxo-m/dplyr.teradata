@@ -17,6 +17,19 @@ db_list_tables.TeradataODBCConnection <- function(con) {
   table_names
 }
 
+#' @export
+db_has_table.TeradataODBCConnection <- function(con, table) {
+  table <- tolower(table)
+  table_names <- tolower(db_list_tables(con))
+  dbname <- attr(con, "dbname")
+  if (is.null(dbname)) {
+    table %in% table_names
+  } else {
+    dbname <- tolower(dbname)
+    table %in% c(table_names, paste(dbname, table_names, sep="."))
+  }
+}
+
 #' @importFrom RODBC sqlQuery
 #' @export
 db_explain.TeradataODBCConnection <- function(con, sql, format = "text", ...) {

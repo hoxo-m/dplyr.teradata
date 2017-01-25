@@ -64,7 +64,7 @@ collect.tbl_teradata <- function(x, ..., n = Inf, warn_incomplete = TRUE)  {
 #' @export
 sql_render.tbl_teradata <- function(query, con = NULL, ...) {
   sql <- sql_render(sql_build(query$ops, query$src$con, ...), con = query$src$con, ...)
-  if (sql %in% db_list_tables(query$src$con)) {
+  if (db_has_table(query$src$con, sql)) {
     sql <- sprintf("SELECT * FROM %s", sql)
   }
   to_teradata_sql(sql)

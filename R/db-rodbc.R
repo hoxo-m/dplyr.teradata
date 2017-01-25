@@ -8,7 +8,6 @@ db_list_tables.RODBC <- function(con) {
   paste(table_df$TABLE_SCHEM, table_df$TABLE_NAME, sep = ".")
 }
 
-#' @importFrom RODBC sqlTables
 #' @export
 db_has_table.RODBC <- function(con, table) {
   table <- tolower(table)
@@ -137,10 +136,13 @@ db_query_rows.RODBC <- function(con, sql, ...) {
   as.integer(qry[[1]])
 }
 
+# Utility Functions -------------------------------------------------------
+
 #' @importFrom RODBC odbcGetErrMsg
 check_odbc_error <- function(qry, con) {
   if (is.integer(qry)) { # qry == -1
     parent_call <- deparse(sys.call(which = 1))
+    parent_call <- paste(parent_call, collapse="\n")
     message <- sprintf("Failed to query in: %s", parent_call)
     error_messages <- odbcGetErrMsg(con)
     stop(message, "\n", paste(error_messages, collapse = "\n"), call. = FALSE)

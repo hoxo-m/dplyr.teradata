@@ -14,12 +14,11 @@ Imports:
     RODBC,
     assertthat,
     methods,
-    rstudioapi,
-    stats
-RoxygenNote: 5.0.1
+    rstudioapi
 Suggests:
     RJDBC,
     fixer,
     odbc,
     rJava,
     testthat
+RoxygenNote: 5.0.1
