@@ -1,8 +1,8 @@
 Package: dplyr.teradata
 Type: Package
-Title: A dplyr Backend for Teradata
+Title: A Teradata Backend for dplyr
 Version: 0.0.0.9000
-Description: A dplyr backend for Teradata.
+Description: A Teradata backend for dplyr.
 Authors@R: person("Koji", "Makiyama", email = "hoxo.smile@gmail.com", role = c("cre", "aut"))
 License: MIT + file LICENSE
 Encoding: UTF-8
