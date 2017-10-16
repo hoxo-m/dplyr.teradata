@@ -22,6 +22,42 @@ knitr::opts_chunk$set(
 
 ## 1. Overview
 
+The package provides a Teradata backend for **dplyr**.
+
+```{r eval=FALSE}
+library(dplyr.teradata)
+
+con <- dbConnect(dplyr.teradata::todbc(), 
+                 driver = "{Teradata Driver}", DBCName = "localhost",
+                 uid = "*****", pwd = "*****")
+my_table <- tbl(con, "my_table")
+
+q <- my_table %>% 
+  select(date) %>%
+  filter(between(date, "2017-01-01", "2017-01-03")) %>% 
+  group_by(date) %>%
+  summarise(n = n()) %>%
+  arrange(date)
+
+show_query(q)
+#> <SQL>
+#> SELECT "date", count(*) AS "n"
+#> FROM (SELECT "date" AS "date"
+#> FROM "my_table") "jmagvgwapc"
+#> WHERE ("date" BETWEEN '2017-01-01' AND '2017-01-03')
+#> GROUP BY "date"
+#> ORDER BY "date"
+
+df <- q %>% collect
+df
+#> # A tibble: 3 x 2
+#>      log_date        n
+#>        <date>    <int>
+#>  1 2017-01-01   123456
+#>  2 2017-01-02  7891011
+#>  3 2017-01-03 12131415
+```
+
 ## 2. Installation
 
 You can install the package from GitHub.
