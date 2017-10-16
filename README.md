@@ -39,7 +39,7 @@ show_query(q)
 df <- q %>% collect
 df
 #> # A tibble: 3 x 2
-#>      log_date        n
+#>          date        n
 #>        <date>    <int>
 #>  1 2017-01-01   123456
 #>  2 2017-01-02  7891011
