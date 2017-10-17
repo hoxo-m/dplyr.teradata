@@ -8,8 +8,8 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Depends:
-    dbplyr (>= 1.0.0),
-    dplyr (>= 0.7.0)
+    dplyr (>= 0.7.0),
+    dbplyr (>= 1.0.0)
 Imports:
     bit64,
     DBI,

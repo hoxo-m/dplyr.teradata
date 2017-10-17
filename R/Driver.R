@@ -112,18 +112,52 @@ setMethod(
 
     # DB Connection -----------------------------------------------------------
     dbConnectODBC <- getMethod("dbConnect", c("OdbcDriver"))
-    con_odbc <- dbConnectODBC(
-      drv, timezone = timezone, encoding = "", bigint = bigint,
-      driver = driver, DBCName = DBCName, database = database,
-      uid = uid, pwd = pwd, charset = charset, tmode = tmode, port = port,
-      dbms.name = "Teradata",
-      .connection_string = .connection_string)
-    info <- generate_connection_info(
-      dbname = database, uid = uid, DBCName = DBCName, port = port,
-      driver = driver, info = con_odbc@info)
-    con_odbc@info <- info
-    con <- new("TeradataOdbcConnection", con_odbc)
-    con@quote <- '"'
+    observer <- getOption("connectionObserver")
+    options(connectionObserver = NULL)
+    tryCatch({
+      con_odbc <- dbConnectODBC(
+        drv, timezone = timezone, encoding = "", bigint = bigint,
+        driver = driver, DBCName = DBCName, database = database,
+        uid = uid, pwd = pwd, charset = charset, tmode = tmode, port = port,
+        dbms.name = "Teradata",
+        .connection_string = .connection_string, ...=...)
+      info <- generate_connection_info(
+        dbname = database, uid = uid, DBCName = DBCName, port = port,
+        driver = driver, info = con_odbc@info)
+      con_odbc@info <- info
+      con <- new("TeradataOdbcConnection", con_odbc)
+      con@quote <- '"'
+    }, finally = options(connectionObserver = observer))
+
+    if (!is.null(getOption("connectionObserver"))) {
+      addTaskCallback(function(expr, ...) {
+        tryCatch({
+          if (is.call(expr) && identical(expr[[1]], as.symbol("<-"))) {
+            connection <- eval(expr[[2]])
+            observer <- getOption("connectionObserver")
+            observer$connectionOpened(
+              type = info$dbms.name,
+              displayName = sprintf("%s - %s@%s", info$dbname, info$username, info$servername),
+              host = odbc:::computeHostName(connection),
+              connectCode = paste(c("library(dplyr.teradata)", deparse(expr)), collapse = "\n"),
+              disconnect = function() odbc::dbDisconnect(connection),
+              listObjectTypes = function () odbc::odbcListObjectTypes(connection),
+              listObjects = function(...) odbc::odbcListObjects(connection, ...),
+              listColumns = function(...) odbc::odbcListColumns(connection, ...),
+              previewObject = function(rowLimit, ...) odbcPreviewObject(connection, rowLimit, ...),
+              actions = odbc::odbcConnectionActions(connection),
+              connectionObject = connection
+            )
+          }
+        }, error = function(e) {
+          warning("Could not notify connection observer. ", e$message, call. = FALSE)
+        })
+
+        # always return false so the task callback is run at most once
+        FALSE
+      })
+    } # nocov end
+
     con
   }
 )
