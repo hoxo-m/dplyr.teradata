@@ -47,40 +47,6 @@ setMethod(
   })
 
 # #' @rdname OdbcConnection
-# #' @inheritParams DBI::dbIsValid
-# #' @export
-# setMethod(
-#   "dbIsValid", "OdbcConnection",
-#   function(dbObj, ...) {
-#     connection_valid(dbObj@ptr)
-#   })
-#
-# #' @rdname OdbcConnection
-# #' @inheritParams DBI::dbDisconnect
-# #' @export
-# setMethod(
-#   "dbDisconnect", "OdbcConnection",
-#   function(conn, ...) {
-#     if (!dbIsValid(conn)) {
-#       warning("Connection already closed.", call. = FALSE)
-#     }
-#
-#     on_connection_closed(conn)
-#     connection_release(conn@ptr)
-#     invisible(TRUE)
-#   })
-#
-# #' @rdname OdbcConnection
-# #' @inheritParams DBI::dbSendQuery
-# #' @export
-# setMethod(
-#   "dbSendQuery", c("OdbcConnection", "character"),
-#   function(conn, statement, ...) {
-#     res <- OdbcResult(connection = conn, statement = statement)
-#     res
-#   })
-#
-# #' @rdname OdbcConnection
 # #' @inheritParams DBI::dbSendStatement
 # #' @export
 # setMethod(
@@ -89,91 +55,28 @@ setMethod(
 #     res <- OdbcResult(connection = conn, statement = statement)
 #     res
 #   })
-#
-# #' @rdname OdbcConnection
-# #' @inheritParams DBI::dbDataType
-# #' @export
-# setMethod(
-#   "dbDataType", "OdbcConnection",
-#   function(dbObj, obj, ...) {
-#     odbcDataType(dbObj, obj)
-#   })
-#
-# #' @rdname OdbcConnection
-# #' @inheritParams DBI::dbDataType
-# #' @export
-# setMethod(
-#   "dbDataType", c("OdbcConnection", "data.frame"),
-#   function(dbObj, obj, ...) {
-#     vapply(obj, odbcDataType, con = dbObj, FUN.VALUE = character(1), USE.NAMES = TRUE)
-#   })
-#
-# #' @rdname OdbcConnection
-# #' @inheritParams DBI::dbQuoteString
-# #' @export
-# setMethod(
-#   "dbQuoteString", c("OdbcConnection", "character"),
-#   function(conn, x, ...) {
-#     # Optional
-#     getMethod("dbQuoteString", c("DBIConnection", "character"), asNamespace("DBI"))(conn, x, ...)
-#   })
-#
-# #' @rdname OdbcConnection
-# #' @inheritParams DBI::dbQuoteIdentifier
-# #' @export
-# setMethod(
-#   "dbQuoteIdentifier", c("OdbcConnection", "character"),
-#   function(conn, x, ...) {
-#     if (nzchar(conn@quote)) {
-#       x <- gsub(conn@quote, paste0(conn@quote, conn@quote), x, fixed = TRUE)
-#     }
-#     DBI::SQL(paste(conn@quote, encodeString(x), conn@quote, sep = ""))
-#   })
-#
-#
-# #' Un-Quote identifiers
-# #'
-# #' Call this method to generate a string that is unquoted. This is the inverse
-# #' of `DBI::dbQuoteIdentifier`.
-# #'
-# #' @param x A character vector to un-quote.
-# #' @inheritParams DBI::dbQuoteIdentifier
-# #' @export
-# setGeneric(
-#   "dbUnQuoteIdentifier",
-#   function(conn, x, ...) standardGeneric("dbUnQuoteIdentifier")
-# )
-#
-# #' @rdname dbUnQuoteIdentifier
-# #' @inheritParams DBI::dbQuoteIdentifier
-# #' @export
-# setMethod(
-#   "dbUnQuoteIdentifier", c("OdbcConnection", "SQL"),
-#   function(conn, x) {
-#     x <- as.character(x)
-#     x <- gsub(paste0("^", conn@quote), "", x)
-#     x <- gsub(paste0(conn@quote, "$"), "", x)
-#     x
-#   })
-#
-# #' @rdname dbUnQuoteIdentifier
-# #' @inheritParams DBI::dbQuoteIdentifier
-# #' @export
-# setMethod(
-#   "dbUnQuoteIdentifier", c("OdbcConnection", "character"),
-#   function(conn, x) {
-#     x
-#   })
-#
-# # @rdname OdbcConnection
-# # @inheritParams DBI::dbListTables
-# # @export
-# setMethod(
-#   "dbListTables", "OdbcConnection",
-#   function(conn, ...) {
-#     connection_sql_tables(conn@ptr, ...)$table_name
-#   })
-#
+
+#' @rdname dbUnQuoteIdentifier
+#' @inheritParams DBI::dbQuoteIdentifier
+#' @export
+setMethod(
+  "dbUnQuoteIdentifier", c("TeradataOdbcConnection", "character"),
+  function(conn, x) {
+    pattern <- sprintf("^%s", conn@quote)
+    x <- sub(pattern, "", x)
+    pattern <- sprintf("%s$", conn@quote)
+    x <- sub(pattern, "", x)
+    x
+  })
+
+#' @rdname TeradataOdbcConnection
+#' @inheritParams DBI::dbListTables
+#' @importFrom methods getMethod
+#' @export
+setMethod(
+  "dbListTables", "TeradataOdbcConnection",
+  getMethod("dbListTables", "Teradata", "odbc"))
+
 # # @rdname OdbcConnection
 # # @inheritParams DBI::dbExistsTable
 # # @export
@@ -215,25 +118,6 @@ setMethod(
     structure(info, class = c(info$dbms.name, "driver_info", "list"))
   })
 
-# # @rdname OdbcConnection
-# # @inheritParams DBI::dbGetQuery
-# # @inheritParams DBI::dbFetch
-# # @export
-# setMethod("dbGetQuery", signature("OdbcConnection", "character"),
-#           function(conn, statement, n = -1, ...) {
-#             rs <- dbSendQuery(conn, statement, ...)
-#             on.exit(dbClearResult(rs))
-#
-#             df <- dbFetch(rs, n = n, ...)
-#
-#             if (!dbHasCompleted(rs)) {
-#               warning("Pending rows", call. = FALSE)
-#             }
-#
-#             df
-#           }
-# )
-#
 # # @rdname OdbcConnection
 # # @inheritParams DBI::dbBegin
 # # @export

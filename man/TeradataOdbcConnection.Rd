@@ -5,21 +5,27 @@
 \alias{TeradataOdbcConnection}
 \alias{TeradataOdbcConnection-class}
 \alias{show,TeradataOdbcConnection-method}
+\alias{dbListTables,TeradataOdbcConnection-method}
 \alias{dbGetInfo,TeradataOdbcConnection-method}
 \title{Teradata Odbc Connection Methods}
 \usage{
 \S4method{show}{TeradataOdbcConnection}(object)
+
+\S4method{dbListTables}{TeradataOdbcConnection}(conn, ...)
 
 \S4method{dbGetInfo}{TeradataOdbcConnection}(dbObj, ...)
 }
 \arguments{
 \item{object}{Any R object}
 
+\item{conn}{A \linkS4class{DBIConnection} object, as returned by
+\code{\link[=dbConnect]{dbConnect()}}.}
+
+\item{...}{Other parameters passed on to methods.}
+
 \item{dbObj}{An object inheriting from \linkS4class{DBIObject},
 i.e. \linkS4class{DBIDriver}, \linkS4class{DBIConnection},
 or a \linkS4class{DBIResult}}
-
-\item{...}{Other arguments to methods.}
 }
 \description{
 Implementations of pure virtual functions defined in the \code{DBI} package

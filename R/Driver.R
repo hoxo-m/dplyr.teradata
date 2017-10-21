@@ -111,6 +111,7 @@ setMethod(
     }
 
     # DB Connection -----------------------------------------------------------
+    dbms.name <- "MyTeradata"
     dbConnectODBC <- getMethod("dbConnect", c("OdbcDriver"))
     observer <- getOption("connectionObserver")
     options(connectionObserver = NULL)
@@ -119,11 +120,11 @@ setMethod(
         drv, timezone = timezone, encoding = "", bigint = bigint,
         driver = driver, DBCName = DBCName, database = database,
         uid = uid, pwd = pwd, charset = charset, tmode = tmode, port = port,
-        dbms.name = "Teradata",
+        dbms.name = dbms.name,
         .connection_string = .connection_string, ...=...)
       info <- generate_connection_info(
-        dbname = database, uid = uid, DBCName = DBCName, port = port,
-        driver = driver, info = con_odbc@info)
+        dbname = database, dbms.name = dbms.name, uid = uid, DBCName = DBCName,
+        port = port, driver = driver, info = con_odbc@info)
       con_odbc@info <- info
       con <- new("TeradataOdbcConnection", con_odbc)
       con@quote <- '"'
@@ -162,10 +163,10 @@ setMethod(
   }
 )
 
-generate_connection_info <- function(dbname, uid, DBCName, port, driver, info) {
+generate_connection_info <- function(dbname, dbms.name, uid, DBCName, port, driver, info) {
   info <- list(
     dbname = dbname,
-    dbms.name = "Teradata",
+    dbms.name = dbms.name,
     db.version = "",
     username = uid,
     host = DBCName,
@@ -177,6 +178,6 @@ generate_connection_info <- function(dbname, uid, DBCName, port, driver, info) {
     driver.version = "",
     odbcdriver.version = "",
     supports.transactions = info$supports.transactions)
-  class(info) <- c("Teradata", "driver_info", "list")
+  class(info) <- c(dbms.name, "driver_info", "list")
   info
 }

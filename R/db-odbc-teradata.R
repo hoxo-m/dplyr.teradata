@@ -19,22 +19,16 @@ db_desc.TeradataOdbcConnection <- function(x) {
 #' @importFrom dplyr db_list_tables
 #' @export
 db_list_tables.TeradataOdbcConnection <- function(con) {
-  table_names <- attr(con, "table_names")
-  if (is.null(table_names)) {
-    dbname <- con@info$dbname
-    if (nzchar(dbname)) {
-      query <- sprintf("SELECT TABLENAME FROM DBC.TABLES WHERE DATABASENAME = '%s'", dbname)
-      res <- dbGetQuery(con, query)
-      table_names <- res$TableName
-    } else {
-      message("Getting all table names for all schema. This process may spend much time at first.")
-      query <- sprintf("SELECT DATABASENAME, TABLENAME FROM DBC.TABLES")
-      res <- dbGetQuery(con, query)
-      table_names <- sprintf("%s.%s", res$DatabaseName, res$TableName)
-    }
-    table_names <- gsub("\\s+", "", table_names)
+  dbname <- con@info$dbname
+  if (nzchar(dbname)) {
+    table_names <- dbListTables(con)
+  } else {
+    message("Getting all table names for all schema.")
+    query <- sprintf("SELECT DATABASENAME, TABLENAME FROM DBC.TABLES")
+    res <- dbGetQuery(con, query)
+    table_names <- sprintf("%s.%s", res$DatabaseName, res$TableName)
   }
-  table_names
+  trimws(table_names)
 }
 
 #' @export
