@@ -71,7 +71,10 @@ db_analyze.TeradataOdbcConnection <- function(con, table, ...) {
 #' @export
 sql_translate_env.TeradataOdbcConnection <- function(con) {
   sql_variant(
-    base_scalar,
+    sql_translator(
+      .parent = base_scalar,
+      case_when = case_when_teradata
+    ),
     sql_translator(
       .parent = base_agg,
       n = function() sql("count(*)")

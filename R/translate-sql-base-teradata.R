@@ -14,36 +14,36 @@
 # assign("if", sql_if_teradata, envir = base_scalar_teradata)
 # assign("ifelse", sql_if_teradata, envir = base_scalar_teradata)
 # assign("if_else", sql_if_teradata, envir = base_scalar_teradata)
-#
-# # case when ---------------------------------------------------------------
-# case_when_teradata <- function(...) {
-#   formulas <- list(...)
-#   n <- length(formulas)
-#   if (n == 0) {
-#     stop("No cases provided", call. = FALSE)
-#   }
-#   query <- vector("list", n)
-#   value <- vector("list", n)
-#   for (i in seq_len(n)) {
-#     f <- formulas[[i]]
-#     sides <- trimws(strsplit(f, "~")[[1]])
-#     if (length(sides) != 2) {
-#       stop("Case ", i, " (", f, ") is not a two-sided formula", call. = FALSE)
-#     }
-#     query[[i]] <- sql(sides[1])
-#     value[[i]] <- sql(sides[2])
-#   }
-#   sql <- build_sql("CASE")
-#   for (i in seq_len(n)) {
-#     if (query[[i]] == "TRUE") break
-#     sql <- build_sql(sql, " WHEN ", query[[i]], " THEN ", value[[i]])
-#   }
-#   if (query[[i]] == "TRUE") {
-#     sql <- build_sql(sql, " ELSE ", value[[i]])
-#   }
-#   sql <- build_sql(sql, " END")
-#   sql
-# }
+
+# case when ---------------------------------------------------------------
+case_when_teradata <- function(...) {
+  formulas <- list(...)
+  n <- length(formulas)
+  if (n == 0) {
+    stop("No cases provided", call. = FALSE)
+  }
+  query <- vector("list", n)
+  value <- vector("list", n)
+  for (i in seq_len(n)) {
+    f <- formulas[[i]]
+    if (length(f) != 3) {
+      stop("Case ", i, " (", f, ") is not a two-sided formula", call. = FALSE)
+    }
+    query[[i]] <- translate_sql_(list(f[[2]]))
+    value[[i]] <- translate_sql_(list(f[[3]]))
+  }
+  sql <- build_sql("CASE")
+  for (i in seq_len(n)) {
+    if (query[[i]] == "TRUE") break
+    sql <- build_sql(sql, " WHEN ", query[[i]], " THEN ", value[[i]])
+  }
+  if (query[[i]] == "TRUE") {
+    sql <- build_sql(sql, " ELSE ", value[[i]])
+  }
+  sql <- build_sql(sql, " END")
+  sql
+}
+
 # assign("case_when", case_when_teradata, envir = base_scalar_teradata)
 #
 # # extract -----------------------------------------------------------------
