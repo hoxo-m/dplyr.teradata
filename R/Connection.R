@@ -56,6 +56,19 @@ setMethod(
 #     res
 #   })
 
+#' @rdname TeradataOdbcConnection
+#' @inheritParams DBI::dbQuoteIdentifier
+#' @export
+setMethod(
+  "dbQuoteIdentifier", c("TeradataOdbcConnection", "character"),
+  function(conn, x, ...) {
+    if (nzchar(conn@quote)) {
+      x <- gsub(conn@quote, paste0(conn@quote, conn@quote), x, fixed = TRUE)
+    }
+    quotes <- ifelse(grepl(".", x, fixed = TRUE), "", conn@quote)
+    DBI::SQL(paste0(quotes, encodeString(x), quotes))
+  })
+
 #' @rdname dbUnQuoteIdentifier
 #' @inheritParams DBI::dbQuoteIdentifier
 #' @export

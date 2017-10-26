@@ -5,11 +5,14 @@
 \alias{TeradataOdbcConnection}
 \alias{TeradataOdbcConnection-class}
 \alias{show,TeradataOdbcConnection-method}
+\alias{dbQuoteIdentifier,TeradataOdbcConnection,character-method}
 \alias{dbListTables,TeradataOdbcConnection-method}
 \alias{dbGetInfo,TeradataOdbcConnection-method}
 \title{Teradata Odbc Connection Methods}
 \usage{
 \S4method{show}{TeradataOdbcConnection}(object)
+
+\S4method{dbQuoteIdentifier}{TeradataOdbcConnection,character}(conn, x, ...)
 
 \S4method{dbListTables}{TeradataOdbcConnection}(conn, ...)
 
@@ -18,10 +21,12 @@
 \arguments{
 \item{object}{Any R object}
 
-\item{conn}{A \linkS4class{DBIConnection} object, as returned by
-\code{\link[=dbConnect]{dbConnect()}}.}
+\item{conn}{A subclass of \linkS4class{DBIConnection}, representing
+an active connection to an DBMS.}
 
-\item{...}{Other parameters passed on to methods.}
+\item{x}{A character vector to quote as identifier.}
+
+\item{...}{Other arguments passed on to methods.}
 
 \item{dbObj}{An object inheriting from \linkS4class{DBIObject},
 i.e. \linkS4class{DBIDriver}, \linkS4class{DBIConnection},
