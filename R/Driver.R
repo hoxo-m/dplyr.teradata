@@ -111,7 +111,7 @@ setMethod(
     }
 
     # DB Connection -----------------------------------------------------------
-    dbms.name <- "MyTeradata"
+    dbms.name <- "Teradata"
     dbConnectODBC <- getMethod("dbConnect", c("OdbcDriver"))
     observer <- getOption("connectionObserver")
     options(connectionObserver = NULL)
