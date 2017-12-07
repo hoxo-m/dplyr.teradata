@@ -46,23 +46,23 @@ case_when_teradata <- function(...) {
 
 # assign("case_when", case_when_teradata, envir = base_scalar_teradata)
 #
-# # extract -----------------------------------------------------------------
-# extract <- function(date_column, target) {
-#   build_sql("EXTRACT(", sql(target), " FROM ", date_column, ")")
-# }
-#
-# year <- function(date_column) {
-#   extract(date_column, "YEAR")
-# }
-#
-# month <- function(date_column) {
-#   extract(date_column, "MONTH")
-# }
-#
-# day <- function(date_column) {
-#   extract(date_column, "DAY")
-# }
-#
+# extract -----------------------------------------------------------------
+extract_teradata <- function(date_column, target) {
+  build_sql("EXTRACT(", sql(target), " FROM ", date_column, ")")
+}
+
+year_teradata<- function(date_column) {
+  extract_teradata(date_column, "YEAR")
+}
+
+month_teradata <- function(date_column) {
+  extract_teradata(date_column, "MONTH")
+}
+
+day_teradata <- function(date_column) {
+  extract_teradata(date_column, "DAY")
+}
+
 # assign("year", year, envir = base_scalar_teradata)
 # assign("month", month, envir = base_scalar_teradata)
 # assign("day", day, envir = base_scalar_teradata)

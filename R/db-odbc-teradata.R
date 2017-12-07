@@ -73,7 +73,11 @@ sql_translate_env.TeradataOdbcConnection <- function(con) {
   sql_variant(
     sql_translator(
       .parent = base_scalar,
-      case_when = case_when_teradata
+      case_when = case_when_teradata,
+      extract = extract_teradata,
+      year = year_teradata,
+      month = month_teradata,
+      day = day_teradata
     ),
     sql_translator(
       .parent = base_agg,
