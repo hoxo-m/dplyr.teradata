@@ -58,7 +58,7 @@ setMethod(
 
 #' @rdname TeradataOdbcConnection
 #' @inheritParams DBI::dbQuoteIdentifier
-#' @import dbplyr is.ident
+#' @importFrom dbplyr is.ident
 #' @export
 setMethod(
   "dbQuoteIdentifier", c("TeradataOdbcConnection", "character"),
