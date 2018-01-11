@@ -116,7 +116,7 @@ setMethod(
     observer <- getOption("connectionObserver")
     options(connectionObserver = NULL)
     tryCatch({
-      con_odbc <- dbConnectODBC(
+      con <- dbConnectODBC(
         drv, timezone = timezone, encoding = "", bigint = bigint,
         driver = driver, DBCName = DBCName, database = database,
         uid = uid, pwd = pwd, charset = charset, tmode = tmode, port = port,
@@ -124,9 +124,8 @@ setMethod(
         .connection_string = .connection_string, ...=...)
       info <- generate_connection_info(
         dbname = database, dbms.name = dbms.name, uid = uid, DBCName = DBCName,
-        port = port, driver = driver, info = con_odbc@info)
-      con_odbc@info <- info
-      con <- new("TeradataOdbcConnection", con_odbc)
+        port = port, driver = driver, info = con@info)
+      con@info <- info
       con@quote <- '"'
     }, finally = options(connectionObserver = observer))
 
