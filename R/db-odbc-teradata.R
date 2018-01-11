@@ -75,9 +75,13 @@ sql_translate_env.TeradataOdbcConnection <- function(con) {
       .parent = base_scalar,
       case_when = case_when_teradata,
       extract = extract_teradata,
-      year = year_teradata,
-      month = month_teradata,
-      day = day_teradata
+      year = make_extract("YEAR"),
+      month = make_extract("MONTH"),
+      day = make_extract("DAY"),
+      hour = make_extract("HOUR"),
+      minute = make_extract("MINUTE"),
+      second = make_extract("SECOND"),
+      cut = cut_teradata
     ),
     sql_translator(
       .parent = base_agg,
