@@ -1,20 +1,3 @@
-# base_scalar_teradata <- as.environment(as.list(dbplyr::base_scalar, all.names=TRUE))
-#
-#
-# # if else -----------------------------------------------------------------
-# sql_if_teradata <- function(cond, if_true, if_false = NULL) {
-#   build_sql(
-#     "CASE WHEN ", cond,
-#     " THEN ", if_true,
-#     if (!is.null(if_false)) build_sql(" ELSE ", if_false),
-#     " END"
-#   )
-# }
-#
-# assign("if", sql_if_teradata, envir = base_scalar_teradata)
-# assign("ifelse", sql_if_teradata, envir = base_scalar_teradata)
-# assign("if_else", sql_if_teradata, envir = base_scalar_teradata)
-
 # case when ---------------------------------------------------------------
 case_when_teradata <- function(...) {
   formulas <- list(...)
@@ -44,29 +27,67 @@ case_when_teradata <- function(...) {
   sql
 }
 
-# assign("case_when", case_when_teradata, envir = base_scalar_teradata)
-#
 # extract -----------------------------------------------------------------
-extract_teradata <- function(date_column, target) {
-  build_sql("EXTRACT(", sql(target), " FROM ", date_column, ")")
+make_extract <- function(target) {
+  function(date_column) {
+    build_sql("EXTRACT(", sql(target), " FROM ", date_column, ")")
+  }
 }
 
-year_teradata<- function(date_column) {
-  extract_teradata(date_column, "YEAR")
+extract_teradata <- function(target, date_column) {
+  make_extract(target)(date_column)
 }
 
-month_teradata <- function(date_column) {
-  extract_teradata(date_column, "MONTH")
+# cut ---------------------------------------------------------------------
+cut_teradata <- function(x, breaks = NULL, labels = NULL,
+                         include.lowest = FALSE, right = TRUE, dig.lab = 3,
+                         ...) {
+
+  # Prepare Arguments -------------------------------------------------------
+  x <- deparse(substitute(x))
+  if(is.null(breaks)) stop("cut() needs breaks argument")
+  if(is.null(labels)) {
+    labels <- levels(cut(0, breaks = breaks, include.lowest = include.lowest,
+                         right = right, dig.lab = dig.lab))
+  }
+  if(right) {
+    lower_op <- ">"
+    higher_op <- "<="
+  } else {
+    lower_op <- ">="
+    higher_op <- "<"
+  }
+  if(length(labels) == 1 && is.character(labels)) {
+    # label is the center mark
+    labels <- generate_range_labels(breaks, include.lowest = include.lowest,
+                                    right = right, center = labels)
+  }
+
+  # Build SQL ---------------------------------------------------------------
+  n <- length(labels)
+  sql <- build_sql("CASE\n")
+  for (i in seq_len(n)) {
+    lower_cond <- sql(sprintf("%s %s %s", x, lower_op, breaks[i]))
+    higher_cond <- sql(sprintf("%s %s %s", x, higher_op, breaks[i+1]))
+    if(i == 1 && breaks[1] == -Inf) {
+      sql <- build_sql(sql, " WHEN ", higher_cond, " THEN ", labels[1], "\n")
+    } else if(i == 1 && include.lowest && right) {
+      lower_cond <- sql(sprintf("%s >= %s", x, breaks[i]))
+      sql <- build_sql(sql, " WHEN ", lower_cond, " AND ", higher_cond, " THEN ", labels[i], "\n")
+    } else if(i == n && breaks[n+1] == Inf) {
+      sql <- build_sql(sql, " WHEN ", lower_cond, " THEN ", labels[n], "\n")
+    } else if(i == n && include.lowest && !right) {
+      higher_cond <- sql(sprintf("%s <= %s", x, breaks[i+1]))
+      sql <- build_sql(sql, " WHEN ", lower_cond, " AND ", higher_cond, " THEN ", labels[i], "\n")
+    } else {
+      sql <- build_sql(sql, " WHEN ", lower_cond, " AND ", higher_cond, " THEN ", labels[i], "\n")
+    }
+  }
+  sql <- build_sql(sql, " ELSE NULL\nEND")
+  sql
 }
 
-day_teradata <- function(date_column) {
-  extract_teradata(date_column, "DAY")
-}
 
-# assign("year", year, envir = base_scalar_teradata)
-# assign("month", month, envir = base_scalar_teradata)
-# assign("day", day, envir = base_scalar_teradata)
-#
 # # not equal ---------------------------------------------------------------
 # not_equal <- function(x, y) {
 #   build_sql(x, " <> ", y)
@@ -106,3 +127,51 @@ day_teradata <- function(date_column) {
 #   build_sql(x, " LIKE ", pattern)
 # }
 # assign("like", like, envir = base_scalar_teradata)
+
+
+is_integer_or_infinaite <- function(values) {
+  all(ifelse(is.finite(values), values %% 1 == 0, TRUE))
+}
+
+generate_range_labels <- function(breaks, include.lowest = FALSE, right = TRUE,
+                                  center = "-", left_char = "", right_char = "") {
+  if(is_integer_or_infinaite(breaks)) {
+    len <- length(breaks) - 1
+    labels <- character(len)
+    for(i in seq_len(len)) {
+      p <- breaks[i]
+      n <- breaks[i+1]
+      if(right) {
+        if(i != 1 || !include.lowest) {
+          p <- p + 1
+        }
+        if(p == -Inf) {
+          label <- sprintf("%s%s%s%s", left_char, center, n, right_char)
+        } else if(n == Inf) {
+          label <- sprintf("%s%s%s%s", left_char, p, center, right_char)
+        } else if(p == n) {
+          label <- sprintf("%s%s%s", left_char, p, right_char)
+        } else {
+          label <- sprintf("%s%s%s%s%s", left_char, p, center, n, right_char)
+        }
+      } else {
+        if(i != len || !include.lowest) {
+          n <- n - 1
+        }
+        if(p == -Inf) {
+          label <- sprintf("%s%s%s%s", left_char, center, n, right_char)
+        } else if(n == Inf) {
+          label <- sprintf("%s%s%s%s", left_char, p, center, right_char)
+        } else if(p == n) {
+          label <- sprintf("%s%s%s", left_char, p, right_char)
+        } else {
+          label <- sprintf("%s%s%s%s%s", left_char, p, center, n, right_char)
+        }
+      }
+      labels[i] <- label
+    }
+    labels
+  } else {
+    stop("breaks are not integer or infinite")
+  }
+}
