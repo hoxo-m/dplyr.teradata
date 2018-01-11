@@ -1,7 +1,7 @@
 Package: dplyr.teradata
 Type: Package
 Title: A Teradata Backend for dplyr
-Version: 0.0.1.9003
+Version: 0.0.1.9004
 Description: A Teradata backend for dplyr.
 Authors@R: person("Koji", "Makiyama", email = "hoxo.smile@gmail.com", role = c("cre", "aut"))
 License: MIT + file LICENSE
@@ -9,7 +9,7 @@ Encoding: UTF-8
 LazyData: true
 Depends:
     dplyr (>= 0.7.0),
-    dbplyr (>= 1.0.0)
+    dbplyr (>= 1.2.0)
 Imports:
     bit64,
     DBI,
@@ -20,4 +20,4 @@ Suggests:
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
 Remotes:
-    rstats-db/odbc
+    r-dbi/odbc

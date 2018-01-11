@@ -58,6 +58,7 @@ setMethod(
 
 #' @rdname TeradataOdbcConnection
 #' @inheritParams DBI::dbQuoteIdentifier
+#' @import dbplyr is.ident
 #' @export
 setMethod(
   "dbQuoteIdentifier", c("TeradataOdbcConnection", "character"),
@@ -65,7 +66,8 @@ setMethod(
     if (nzchar(conn@quote)) {
       x <- gsub(conn@quote, paste0(conn@quote, conn@quote), x, fixed = TRUE)
     }
-    quotes <- ifelse(grepl(".", x, fixed = TRUE), "", conn@quote)
+    quotes <- ifelse(is.ident(x) && !grepl("[^\\._[:alnum:]]", x),
+                     "", conn@quote)
     DBI::SQL(paste0(quotes, encodeString(x), quotes))
   })
 
