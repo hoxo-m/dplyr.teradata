@@ -1,5 +1,4 @@
 ---
-title: "A Teradata Backend for dplyr"
 author: Koji MAKIYAMA (@hoxo_m)
 output:
   md_document:
@@ -19,6 +18,8 @@ knitr::opts_chunk$set(
   message = FALSE
 )
 ```
+
+# A Teradata Backend for dplyr
 
 [![CRAN Version](http://www.r-pkg.org/badges/version/dplyr.teradata)](https://cran.r-project.org/package=dplyr.teradata)
 
