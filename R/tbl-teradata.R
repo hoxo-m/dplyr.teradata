@@ -1,6 +1,7 @@
-#' @import odbc dplyr dbplyr
+#' @import odbc dbplyr
 NULL
 
+#' @importFrom dplyr tbl
 #' @export
 tbl.Teradata <- function(src, from, ...) {
   tbl <- tbl(src_dbi(src), from = from, ...)
@@ -8,6 +9,7 @@ tbl.Teradata <- function(src, from, ...) {
   tbl
 }
 
+#' @importFrom dplyr dim_desc db_desc
 #' @export
 print.tbl_teradata <- function(x, ..., n = NULL, width = NULL) {
   cat("Source:   query ", dim_desc(x), "\n", sep = "")
@@ -22,6 +24,7 @@ print.tbl_teradata <- function(x, ..., n = NULL, width = NULL) {
   invisible(x)
 }
 
+#' @importFrom dplyr collect db_explain groups grouped_df
 #' @export
 collect.tbl_teradata <- function(x, ..., n = Inf, warn_incomplete = TRUE, safety = TRUE) {
   if (is.infinite(n)) {

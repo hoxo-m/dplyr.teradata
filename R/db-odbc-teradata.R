@@ -1,6 +1,5 @@
 # DBI methods ------------------------------------------------------------------
 
-#' @importFrom odbc dbGetQuery dbListTables
 #' @importFrom dplyr db_list_tables
 #' @export
 db_list_tables.Teradata <- function(con) {
@@ -16,8 +15,8 @@ db_list_tables.Teradata <- function(con) {
   trimws(table_names)
 }
 
+#' @importFrom dplyr db_has_table db_list_tables
 #' @export
-#' @importFrom dplyr db_has_table
 db_has_table.Teradata <- function(con, table, ...) {
   table <- tolower(table)
   table_names <- tolower(db_list_tables(con))
