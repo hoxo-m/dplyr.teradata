@@ -2,10 +2,10 @@
 title: "A Teradata Backend for dplyr"
 author: Koji MAKIYAMA (@hoxo_m)
 output:
-  html_document:
-    keep_md: true
   md_document:
     variant: markdown_github
+  html_document:
+    keep_md: true
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
