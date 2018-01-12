@@ -1,3 +1,4 @@
+#' @importFrom odbc dbListTables
 #' @export
 db_list_tables_with_pattern <- function(con, pattern) {
   table_names <- db_list_tables(con)
@@ -8,8 +9,3 @@ db_list_tables_with_pattern <- function(con, pattern) {
 raw_to_string <- function(raw) {
   vapply(raw, function(x) paste(as.character(x), collapse = ""), character(1))
 }
-
-dot_to_underscore <- function(x) {
-  gsub(".", "_", x, fixed = TRUE)
-}
-

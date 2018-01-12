@@ -1,0 +1,15 @@
+.onAttach <- function(libname, pkgname) {
+  assign("case_when", sql_case_when, envir = dbplyr::base_odbc_scalar)
+  assign("extract", sql_extract, envir = dbplyr::base_odbc_scalar)
+  assign("year", make_extract("YEAR"), envir = dbplyr::base_odbc_scalar)
+  assign("month", make_extract("MONTH"), envir = dbplyr::base_odbc_scalar)
+  assign("day", make_extract("DAY"), envir = dbplyr::base_odbc_scalar)
+  assign("hour", make_extract("HOUR"), envir = dbplyr::base_odbc_scalar)
+  assign("minute", make_extract("MINUTE"), envir = dbplyr::base_odbc_scalar)
+  assign("second", make_extract("SECOND"), envir = dbplyr::base_odbc_scalar)
+  assign("as_date", dbplyr::base_odbc_scalar$as.Date, envir = dbplyr::base_odbc_scalar)
+  assign("cut", sql_cut, envir = dbplyr::base_odbc_scalar)
+  assign("like", sql_like, envir = dbplyr::base_odbc_scalar)
+  assign("to_timestamp", sql_to_timestamp, envir = dbplyr::base_odbc_scalar)
+  assign("%%", sql_mod, envir = dbplyr::base_odbc_scalar)
+}

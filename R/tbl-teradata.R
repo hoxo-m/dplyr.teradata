@@ -1,7 +1,7 @@
 #' @importFrom dplyr tbl
 #' @importFrom dbplyr src_dbi
 #' @export
-tbl.TeradataOdbcConnection <- function(src, from, ...) {
+tbl.Teradata <- function(src, from, ...) {
   tbl <- tbl(src_dbi(src), from = from, ...)
   class(tbl) <- c("tbl_teradata", class(tbl))
   tbl
@@ -63,19 +63,4 @@ collect.tbl_teradata <- function(x, ..., n = Inf, warn_incomplete = TRUE, safety
   }
 
   grouped_df(out, group_columns)
-}
-
-# SQL render --------------------------------------------------------------
-
-#' @importFrom dbplyr sql_render sql_build
-#' @export
-sql_render.tbl_teradata <- function(query, con = NULL, ...) {
-  sql <- sql_render(sql_build(query$ops, query$src$con, ...), con = query$src$con, ...)
-  to_teradata_sql(sql)
-}
-
-# Utility Functions -------------------------------------------------------
-
-to_teradata_sql <- function(sql) {
-  gsub("\\bLIMIT\\b", "SAMPLE", sql)
 }

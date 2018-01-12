@@ -1,5 +1,5 @@
 # case when ---------------------------------------------------------------
-case_when_teradata <- function(...) {
+sql_case_when <- function(...) {
   formulas <- list(...)
   n <- length(formulas)
   if (n == 0) {
@@ -34,12 +34,12 @@ make_extract <- function(target) {
   }
 }
 
-extract_teradata <- function(target, date_column) {
+sql_extract <- function(target, date_column) {
   make_extract(target)(date_column)
 }
 
 # cut ---------------------------------------------------------------------
-cut_teradata <- function(x, breaks = NULL, labels = NULL,
+sql_cut <- function(x, breaks = NULL, labels = NULL,
                          include.lowest = FALSE, right = TRUE, dig.lab = 3,
                          ...) {
 
@@ -87,48 +87,6 @@ cut_teradata <- function(x, breaks = NULL, labels = NULL,
   sql
 }
 
-
-# # not equal ---------------------------------------------------------------
-# not_equal <- function(x, y) {
-#   build_sql(x, " <> ", y)
-# }
-# assign("!=", not_equal, envir = base_scalar_teradata)
-#
-#
-# # cast --------------------------------------------------------------------
-# as_teradata <- function(x, type) {
-#   build_sql("CAST(", x, " AS ", sql(type), ")")
-# }
-# assign("as", as_teradata, envir = base_scalar_teradata)
-#
-#
-# # is not null -------------------------------------------------------------
-# is_not_null <- function(x) {
-#   build_sql("(", x, ") IS NOT NULL")
-# }
-# assign("is.notnull", is_not_null, envir = base_scalar_teradata)
-#
-# op_not <- function(..., na.rm) {
-#   args <- list(...)
-#   if (length(args) == 1) {
-#     sql <- args[[1]]
-#     if (endsWith(sql, "IS NULL")) {
-#       return(gsub("IS NULL", "IS NOT NULL", sql))
-#     }
-#   }
-#   base_scalar$`!`(..., na.rm)
-# }
-# assign("!", op_not, envir = base_scalar_teradata)
-#
-#
-# # like --------------------------------------------------------------------
-#
-# like <- function(x, pattern) {
-#   build_sql(x, " LIKE ", pattern)
-# }
-# assign("like", like, envir = base_scalar_teradata)
-
-
 is_integer_or_infinaite <- function(values) {
   all(ifelse(is.finite(values), values %% 1 == 0, TRUE))
 }
@@ -175,3 +133,21 @@ generate_range_labels <- function(breaks, include.lowest = FALSE, right = TRUE,
     stop("breaks are not integer or infinite")
   }
 }
+
+# like --------------------------------------------------------------------
+sql_like <- function(x, pattern) {
+  build_sql(x, " LIKE ", pattern)
+}
+
+# to_timestamp ------------------------------------------------------------
+sql_to_timestamp <- function(x) {
+  build_sql("CAST(DATE '1970-01-01' + (", x ,
+            " / 86400) AS TIMESTAMP(0)) + (", x,
+            " MOD 86400) * (INTERVAL '00:00:01' HOUR TO SECOND)")
+}
+
+# mod ---------------------------------------------------------------------
+sql_mod <- function(x, divisor) {
+  build_sql(x, " MOD ", divisor)
+}
+

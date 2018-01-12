@@ -7,16 +7,12 @@
 #' @name TeradataOdbcConnection
 NULL
 
-#' @rdname TeradataOdbcConnection
-#' @export
-setClass("TeradataOdbcConnection",
-         contains="OdbcConnection",
-         slots = list(
-           ptr = "externalptr",
-           quote = "character",
-           info = "ANY",
-           encoding = "character"
-         ))
+class_cache <- get("class_cache", envir = asNamespace("odbc"))
+class <- getClassDef("Teradata", where = class_cache, inherits = FALSE)
+if (is.null(class) || methods::isVirtualClass(class)) {
+  setClass("Teradata",
+           contains = "OdbcConnection", where = class_cache)
+}
 
 #' @rdname TeradataOdbcConnection
 #' @inheritParams methods::show
@@ -56,7 +52,8 @@ setMethod(
     if (nzchar(conn@quote)) {
       x <- gsub(conn@quote, paste0(conn@quote, conn@quote), x, fixed = TRUE)
     }
-    quotes <- ifelse(is.ident(x) && !grepl("[^\\._[:alnum:]]", x),
+    schema_tablename_pattern <- "^[[:alnum:]_]+\\.[[:alnum:]_]+$"
+    quotes <- ifelse(is.ident(x) && grepl(schema_tablename_pattern, x),
                      "", conn@quote)
     DBI::SQL(paste0(quotes, encodeString(x), quotes))
   })
