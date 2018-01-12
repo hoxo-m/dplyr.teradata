@@ -3,8 +3,8 @@
 #' Teradata Odbc Driver Methods
 #'
 #' Implementations of pure virtual functions defined in the `DBI` package
-#' for TeradataOdbcDriver objects.
-#' @name TeradtaOdbcDriver
+#' for `TeradataOdbcDriver` objects.
+#' @name TeradataOdbcDriver
 NULL
 
 #' Teradata Odbc driver

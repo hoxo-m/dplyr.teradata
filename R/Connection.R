@@ -58,7 +58,12 @@ setMethod(
     DBI::SQL(paste0(quotes, encodeString(x), quotes))
   })
 
-#' @rdname dbUnQuoteIdentifier
+#' Un-Quote identifiers
+#'
+#' Call this method to generate a string that is unquoted. This is the inverse
+#' of `DBI::dbQuoteIdentifier`.
+#'
+#' @param x A character vector to un-quote.
 #' @inheritParams DBI::dbQuoteIdentifier
 #' @export
 setMethod(
