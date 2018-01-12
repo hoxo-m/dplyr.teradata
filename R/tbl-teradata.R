@@ -1,5 +1,6 @@
-#' @importFrom dplyr tbl
-#' @importFrom dbplyr src_dbi
+#' @import odbc dplyr dbplyr
+NULL
+
 #' @export
 tbl.Teradata <- function(src, from, ...) {
   tbl <- tbl(src_dbi(src), from = from, ...)
@@ -21,8 +22,6 @@ print.tbl_teradata <- function(x, ..., n = NULL, width = NULL) {
   invisible(x)
 }
 
-#' @importFrom odbc dbSendQuery dbFetch dbClearResult
-#' @importFrom dplyr collect db_explain
 #' @export
 collect.tbl_teradata <- function(x, ..., n = Inf, warn_incomplete = TRUE, safety = TRUE) {
   if (is.infinite(n)) {

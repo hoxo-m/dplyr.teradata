@@ -1,4 +1,4 @@
-#' @importFrom odbc dbListTables
+#' @importFrom dplyr db_list_tables
 #' @export
 db_list_tables_with_pattern <- function(con, pattern) {
   table_names <- db_list_tables(con)
@@ -7,5 +7,5 @@ db_list_tables_with_pattern <- function(con, pattern) {
 
 #' @export
 raw_to_string <- function(raw) {
-  vapply(raw, function(x) paste(as.character(x), collapse = ""), character(1))
+  vapply(raw, function(x) paste(as.character(x), collapse = ""), character(1L))
 }

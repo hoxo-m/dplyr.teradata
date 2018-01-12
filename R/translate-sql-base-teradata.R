@@ -1,3 +1,6 @@
+#' @import dbplyr
+NULL
+
 # case when ---------------------------------------------------------------
 sql_case_when <- function(...) {
   formulas <- list(...)
