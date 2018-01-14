@@ -58,6 +58,15 @@ setMethod(
     DBI::SQL(paste0(quotes, encodeString(x), quotes))
   })
 
+#' @rdname TeradataOdbcConnection
+#' @inheritParams DBI::dbQuoteIdentifier
+#' @export
+setMethod(
+  "dbQuoteIdentifier", c("Teradata", "SQL"),
+  function(conn, x, ...) {
+    x
+  })
+
 #' Un-Quote identifiers
 #'
 #' Call this method to generate a string that is unquoted. This is the inverse
@@ -65,16 +74,18 @@ setMethod(
 #'
 #' @param x A character vector to un-quote.
 #' @inheritParams DBI::dbQuoteIdentifier
+#' @name dbUnQuoteIdentifier
+#' @export
+setMethod(
+  "dbUnQuoteIdentifier", c("Teradata", "SQL"),
+  getMethod("dbUnQuoteIdentifier", c("OdbcConnection", "SQL")))
+
+#' @rdname dbUnQuoteIdentifier
+#' @inheritParams DBI::dbQuoteIdentifier
 #' @export
 setMethod(
   "dbUnQuoteIdentifier", c("Teradata", "character"),
-  function(conn, x) {
-    pattern <- sprintf("^%s", conn@quote)
-    x <- sub(pattern, "", x)
-    pattern <- sprintf("%s$", conn@quote)
-    x <- sub(pattern, "", x)
-    x
-  })
+  getMethod("dbUnQuoteIdentifier", c("OdbcConnection", "SQL")))
 
 #' @rdname TeradataOdbcConnection
 #' @inheritParams DBI::dbGetInfo

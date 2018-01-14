@@ -1,6 +1,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-A Teradata Backend for dplyr
-============================
+dplyr.teradata: A Teradata Backend for dplyr
+============================================
 
 [![CRAN Version](http://www.r-pkg.org/badges/version/dplyr.teradata)](https://cran.r-project.org/package=dplyr.teradata)
 
@@ -9,7 +9,7 @@ A Teradata Backend for dplyr
 
 The package provides a Teradata backend for **dplyr**.
 
-It makes it possible to operate [Teradata Database](https://www.teradata.com/products-and-services/teradata-database/) in the same way as manipulating data frames with **dplyr** package.
+It makes it possible to operate [Teradata Database](https://www.teradata.com/products-and-services/teradata-database/) in the same way as manipulating data frames with **dplyr**.
 
 ``` r
 library(dplyr.teradata)
@@ -65,19 +65,19 @@ The source code for **dplyr.teradata** package is available on GitHub at
 3 Details
 ---------
 
-The package provides a Teradata backend for **dplyr**. It makes it possible to build SQL for [Teradata Database](https://www.teradata.com/products-and-services/teradata-database/) in the same way as manipulating data frames with **dplyr** package. It also can send the queries and then receive its results on R.
+The package provides a Teradata backend for **dplyr**. It makes it possible to build SQL for [Teradata Database](https://www.teradata.com/products-and-services/teradata-database/) in the same way as manipulating data frames with the **dplyr** package. It also can send the queries and then receive its results on R.
 
 Therefore, you can complete data analysis with Teradata only on R. It means that you are freed from troublesome switching of tools and switching thoughts that cause mistakes.
 
 ### 3.1 Usage
 
-The package uses **odbc** package to connect database and **dbplyr** package to build SQL.
+The package uses the **odbc** package to connect database and the **dbplyr** package to build SQL.
 
 First, you need to establish an ODBC connection to Teradata. See:
 
 -   [README - **odbc** package](https://cran.r-project.org/web/packages/odbc/README.html).
 
-The package have special driver function `todbc()`.
+The **dplyr.teradata** package has special driver function `todbc()`.
 
 ``` r
 # Establish a connection to Teradata
@@ -90,7 +90,7 @@ Second, you need to specify a table to build SQL. See:
 
 -   [Introduction to dbplyr • dbplyr](http://dbplyr.tidyverse.org/articles/dbplyr.html).
 
-To specify tables, you can use `tbl()`:
+To specify a table, you can use `tbl()`:
 
 ``` r
 # Getting table
@@ -155,7 +155,9 @@ df
 
 The package mainly use **dbplyr** to translate manipulations into queries.
 
-*Translatable functions* are the available functions in manipulation that it can translate into SQL functions.
+*Translatable functions* are the available functions in manipulations that it can translate into SQL functions.
+
+For instance, `n()` is translated to `count(*)` in the above example.
 
 To know translatable functions for Teradata, refer the following:
 
@@ -169,7 +171,7 @@ You might familiar the **lubridate** package to manipulate date and time data.
 
 **dplyr.teradata** has **lubridate** friendly functions:
 
--   `year()`, `month()`, `day()`, `hour()`, `minutes()`, `second()`
+-   `year()`, `month()`, `day()`, `hour()`, `minutes()` and `second()`.
 
 For example, you can pick year from date type column.
 
@@ -199,7 +201,7 @@ Such as above manipulation is translated into SQL like following:
 
 `cut()` is very useful function that you can use in base R.
 
-For example, you want to cut values of `x` into three parts of ranges by breaks points 2 and 4:
+For example, you want to cut values of `x` into three parts of ranges by break points 2 and 4:
 
 ``` r
 x <- 1:6
@@ -216,7 +218,7 @@ breaks = c(0, 2, 4, 6)
 mutate(y = cut(x, breaks))
 ```
 
-In the result, it is translated into a SQL `CASE WHEN` statement as follows:
+In the result, it is translated to a `CASE WHEN` statement as follows:
 
     #> <SQL> CASE
     #>  WHEN x > 0 AND x <= 2 THEN '(0,2]'
@@ -243,7 +245,7 @@ mutate(y = cut(x, breaks, labels = "-", include.lowest = TRUE))
 
 #### 3.3.1 `blob_to_string()`
 
-`blob` object from databases prevents manipulation with **dplyr**.
+The `blob` object from databases sometimes prevents manipulations with **dplyr**.
 
 You might want to convert them to string.
 
