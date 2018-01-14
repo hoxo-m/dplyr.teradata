@@ -3,3 +3,4 @@
 ^\.Rprofile$
 README\.Rmd
 README\.html
+^\.travis\.yml$
