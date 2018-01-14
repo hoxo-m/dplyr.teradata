@@ -74,7 +74,6 @@ setMethod(
 #'
 #' @param x A character vector to un-quote.
 #' @inheritParams DBI::dbQuoteIdentifier
-#' @name dbUnQuoteIdentifier
 #' @export
 setMethod(
   "dbUnQuoteIdentifier", c("Teradata", "SQL"),
