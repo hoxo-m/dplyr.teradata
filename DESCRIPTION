@@ -17,6 +17,7 @@ Imports:
     odbc (>= 1.1.4)
 Suggests:
     blob,
+    covr,
     testthat
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
