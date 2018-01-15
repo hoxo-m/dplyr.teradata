@@ -5,3 +5,4 @@
 .Rprofile
 tests/testthat/test-my_*
 README\.html
+inst/doc

@@ -1,15 +1,15 @@
 ---
-author: Koji MAKIYAMA (@hoxo_m)
-output:
-  md_document:
-    variant: markdown_github
-  html_document:
-    keep_md: true
+title: "A Teradata Backend for dplyr"
+author: "Koji MAKIYAMA (@hoxo_m)"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -20,10 +20,6 @@ knitr::opts_chunk$set(
 ```
 
 # dplyr.teradata: A Teradata Backend for dplyr
-
-[![Travis-CI Build Status](https://travis-ci.org/hoxo-m/dplyr.teradata.svg?branch=master)](https://travis-ci.org/hoxo-m/dplyr.teradata)
-[![CRAN Version](http://www.r-pkg.org/badges/version/dplyr.teradata)](https://cran.r-project.org/package=dplyr.teradata)
-[![Coverage Status](https://img.shields.io/coveralls/hoxo-m/dplyr.teradata.svg)](https://coveralls.io/r/hoxo-m/dplyr.teradata?branch=master)
 
 ## 1 Overview
 

@@ -1,7 +1,7 @@
 Package: dplyr.teradata
 Type: Package
-Title: A Teradata Backend for dplyr
-Version: 0.0.1.9007
+Title: A Teradata Backend for Dplyr
+Version: 0.1.0
 Description: A Teradata backend for dplyr.
 Authors@R: person("Koji", "Makiyama", email = "hoxo.smile@gmail.com", role = c("cre", "aut"))
 License: MIT + file LICENSE
@@ -18,6 +18,9 @@ Imports:
 Suggests:
     blob,
     covr,
+    knitr,
+    rmarkdown,
     testthat
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.0.1
+VignetteBuilder: knitr

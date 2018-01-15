@@ -67,19 +67,14 @@ setMethod(
     x
   })
 
-#' Un-Quote identifiers
-#'
-#' Call this method to generate a string that is unquoted. This is the inverse
-#' of `DBI::dbQuoteIdentifier`.
-#'
-#' @param x A character vector to un-quote.
+#' @rdname TeradataOdbcConnection
 #' @inheritParams DBI::dbQuoteIdentifier
 #' @export
 setMethod(
   "dbUnQuoteIdentifier", c("Teradata", "SQL"),
   getMethod("dbUnQuoteIdentifier", c("OdbcConnection", "SQL")))
 
-#' @rdname dbUnQuoteIdentifier
+#' @rdname TeradataOdbcConnection
 #' @inheritParams DBI::dbQuoteIdentifier
 #' @export
 setMethod(
