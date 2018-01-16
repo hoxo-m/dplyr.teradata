@@ -19,8 +19,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-# dplyr.teradata: A Teradata Backend for dplyr
-
 ## 1 Overview
 
 The package provides a Teradata backend for **dplyr**. 
