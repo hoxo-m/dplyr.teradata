@@ -1,7 +1,7 @@
 Package: dplyr.teradata
 Type: Package
 Title: A 'Teradata' Backend for 'dplyr'
-Version: 0.1.1.9002
+Version: 0.2.0
 Description: A 'Teradata' backend for 'dplyr'. It makes it possible to operate
   'Teradata' database <https://www.teradata.com/products-and-services/teradata-database/>
   in the same way as manipulating data frames with 'dplyr'.
