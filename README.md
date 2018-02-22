@@ -218,7 +218,29 @@ Such as above manipulation is translated into SQL like following:
 
     #> <SQL> EXTRACT(YEAR FROM `date_type_column`)
 
-#### 3.2.2 `to_timestamp()`
+#### 3.2.2 Treat Boolean
+
+Teradata does not have the boolean data type. So when we use boolean, we
+need to write some complex statements. The package has several functions
+to treat briefly.
+
+`bool_to_int` transforms boolean to integer.
+
+``` r
+mutate(is_positive = bool_to_int(x > 0L))
+```
+
+    #> <SQL> CASE WHEN (`x` > 0) THEN 1 WHEN NOT(`x` > 0) THEN 0 END
+
+`count_if()` or `n_if()` counts a number of rows satisfying a condition.
+
+``` r
+summarize(n = count_if(x > 0L))
+```
+
+    #> <SQL> SUM(CASE WHEN (`x` > 0) THEN 1 WHEN NOT(`x` > 0) THEN 0 END)
+
+#### 3.2.3 `to_timestamp()`
 
 If your table has a column stored UNIX time and you want to convert it
 to timestamp, you need to write complex SQL.
@@ -233,7 +255,7 @@ Such as above manipulation is translated into SQL like following:
 
     #> <SQL> CAST(DATE '1970-01-01' + (`unixtime_column` / 86400) AS TIMESTAMP(0)) + (`unixtime_column` MOD 86400) * (INTERVAL '00:00:01' HOUR TO SECOND)
 
-#### 3.2.3 `cut()`
+#### 3.2.4 `cut()`
 
 `cut()` is very useful function that you can use in base R.
 
