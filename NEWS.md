@@ -2,4 +2,8 @@
 
 ## New features
 
+- Add 'count_if()' and 'n_if()' (#6)
 
+## Improvements
+
+- Change loading messages
