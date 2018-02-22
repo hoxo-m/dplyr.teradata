@@ -14,6 +14,7 @@
   assign("%%", sql_mod, envir = dbplyr::base_odbc_scalar)
   assign("count_if", sql_count_if, envir = dbplyr::base_odbc_scalar)
   assign("n_if", sql_count_if, envir = dbplyr::base_odbc_scalar)
+  assign("bool_to_int", sql_bool_to_int, envir = dbplyr::base_odbc_scalar)
 
   # Attaching packages ------------------------------------------------------
   # See https://github.com/tidyverse/tidyverse/blob/master/R/zzz.R

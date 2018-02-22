@@ -158,3 +158,8 @@ sql_mod <- function(x, divisor) {
 sql_count_if <- function(cond) {
   build_sql("SUM(CASE WHEN (", cond, ") THEN 1 WHEN NOT(", cond, ") THEN 0 END)")
 }
+
+# bool_to_int
+sql_bool_to_int <- function(cond) {
+  build_sql("CASE WHEN (", cond, ") THEN 1 WHEN NOT(", cond, ") THEN 0 END")
+}

@@ -2,7 +2,8 @@
 
 ## New features
 
-- Add 'count_if()' and 'n_if()' (#6)
+- Add `count_if()` and `n_if()` (#6)
+- Add `bool_to_int()`
 
 ## Improvements
 
