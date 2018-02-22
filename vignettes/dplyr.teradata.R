@@ -18,7 +18,6 @@ knitr::opts_chunk$set(
 #  
 #  # Build a query
 #  q <- my_table %>%
-#    select(date) %>%
 #    filter(between(date, "2017-01-01", "2017-01-03")) %>%
 #    group_by(date) %>%
 #    summarise(n = n()) %>%
@@ -27,8 +26,7 @@ knitr::opts_chunk$set(
 #  show_query(q)
 #  #> <SQL>
 #  #> SELECT "date", count(*) AS "n"
-#  #> FROM (SELECT "date" AS "date"
-#  #> FROM "my_table") "jmagvgwapc"
+#  #> FROM "my_table_name"
 #  #> WHERE ("date" BETWEEN '2017-01-01' AND '2017-01-03')
 #  #> GROUP BY "date"
 #  #> ORDER BY "date"
@@ -66,7 +64,6 @@ knitr::opts_chunk$set(
 ## ------------------------------------------------------------------------
 #  # Build a query
 #  q <- my_table %>%
-#    select(date) %>%
 #    filter(between(date, "2017-01-01", "2017-01-03")) %>%
 #    group_by(date) %>%
 #    summarise(n = n()) %>%
@@ -76,8 +73,7 @@ knitr::opts_chunk$set(
 #  show_query(q)
 #  #> <SQL>
 #  #> SELECT "date", count(*) AS "n"
-#  #> FROM (SELECT "date" AS "date"
-#  #> FROM "my_table") "jmagvgwapc"
+#  #> FROM "my_table_name"
 #  #> WHERE ("date" BETWEEN '2017-01-01' AND '2017-01-03')
 #  #> GROUP BY "date"
 #  #> ORDER BY "date"

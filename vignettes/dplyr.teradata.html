@@ -12,7 +12,7 @@
 
 <meta name="author" content="Koji MAKIYAMA (@hoxo_m)" />
 
-<meta name="date" content="2018-01-16" />
+<meta name="date" content="2018-02-22" />
 
 <title>A Teradata Backend for dplyr</title>
 
@@ -280,7 +280,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">A Teradata Backend for dplyr</h1>
 <h4 class="author"><em>Koji MAKIYAMA (<span class="citation" data-cites="hoxo_m">@hoxo_m</span>)</em></h4>
-<h4 class="date"><em>2018-01-16</em></h4>
+<h4 class="date"><em>2018-02-22</em></h4>
 
 
 
@@ -298,36 +298,34 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb1-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co"># Build a query</span></a>
 <a class="sourceLine" id="cb1-10" data-line-number="10">q &lt;-<span class="st"> </span>my_table <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="st">  </span><span class="kw">select</span>(date) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">between</span>(date, <span class="st">&quot;2017-01-01&quot;</span>, <span class="st">&quot;2017-01-03&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"><span class="st">  </span><span class="kw">arrange</span>(date)</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"></a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="kw">show_query</span>(q)</a>
-<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; &lt;SQL&gt;</span></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; SELECT &quot;date&quot;, count(*) AS &quot;n&quot;</span></a>
-<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#&gt; FROM (SELECT &quot;date&quot; AS &quot;date&quot;</span></a>
-<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co">#&gt; FROM &quot;my_table&quot;) &quot;jmagvgwapc&quot;</span></a>
-<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#&gt; WHERE (&quot;date&quot; BETWEEN '2017-01-01' AND '2017-01-03')</span></a>
-<a class="sourceLine" id="cb1-23" data-line-number="23"><span class="co">#&gt; GROUP BY &quot;date&quot;</span></a>
-<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co">#&gt; ORDER BY &quot;date&quot;</span></a>
-<a class="sourceLine" id="cb1-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb1-26" data-line-number="26"><span class="co"># Send the query and get its result on R</span></a>
-<a class="sourceLine" id="cb1-27" data-line-number="27">df &lt;-<span class="st"> </span>q <span class="op">%&gt;%</span><span class="st"> </span>collect</a>
-<a class="sourceLine" id="cb1-28" data-line-number="28">df</a>
-<a class="sourceLine" id="cb1-29" data-line-number="29"><span class="co">#&gt; # A tibble: 3 x 2</span></a>
-<a class="sourceLine" id="cb1-30" data-line-number="30"><span class="co">#&gt;          date        n</span></a>
-<a class="sourceLine" id="cb1-31" data-line-number="31"><span class="co">#&gt;        &lt;date&gt;    &lt;int&gt;</span></a>
-<a class="sourceLine" id="cb1-32" data-line-number="32"><span class="co">#&gt;  1 2017-01-01   123456</span></a>
-<a class="sourceLine" id="cb1-33" data-line-number="33"><span class="co">#&gt;  2 2017-01-02  7891011</span></a>
-<a class="sourceLine" id="cb1-34" data-line-number="34"><span class="co">#&gt;  3 2017-01-03 12131415</span></a></code></pre></div>
+<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">between</span>(date, <span class="st">&quot;2017-01-01&quot;</span>, <span class="st">&quot;2017-01-03&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="st">  </span><span class="kw">arrange</span>(date)</a>
+<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="kw">show_query</span>(q)</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt; &lt;SQL&gt;</span></a>
+<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; SELECT &quot;date&quot;, count(*) AS &quot;n&quot;</span></a>
+<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; FROM &quot;my_table_name&quot;</span></a>
+<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#&gt; WHERE (&quot;date&quot; BETWEEN '2017-01-01' AND '2017-01-03')</span></a>
+<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co">#&gt; GROUP BY &quot;date&quot;</span></a>
+<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#&gt; ORDER BY &quot;date&quot;</span></a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co"># Send the query and get its result on R</span></a>
+<a class="sourceLine" id="cb1-25" data-line-number="25">df &lt;-<span class="st"> </span>q <span class="op">%&gt;%</span><span class="st"> </span>collect</a>
+<a class="sourceLine" id="cb1-26" data-line-number="26">df</a>
+<a class="sourceLine" id="cb1-27" data-line-number="27"><span class="co">#&gt; # A tibble: 3 x 2</span></a>
+<a class="sourceLine" id="cb1-28" data-line-number="28"><span class="co">#&gt;          date        n</span></a>
+<a class="sourceLine" id="cb1-29" data-line-number="29"><span class="co">#&gt;        &lt;date&gt;    &lt;int&gt;</span></a>
+<a class="sourceLine" id="cb1-30" data-line-number="30"><span class="co">#&gt;  1 2017-01-01   123456</span></a>
+<a class="sourceLine" id="cb1-31" data-line-number="31"><span class="co">#&gt;  2 2017-01-02  7891011</span></a>
+<a class="sourceLine" id="cb1-32" data-line-number="32"><span class="co">#&gt;  3 2017-01-03 12131415</span></a></code></pre></div>
 </section>
 <section id="installation" class="level2">
 <h2>2 Installation</h2>
 <p>You can install the <strong>dplyr.teradata</strong> package from CRAN.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;dplyr.teradata&quot;</span>)</a></code></pre></div>
-<p>You can also install the package from GitHub.</p>
+<p>You can also install the development version of the package from GitHub.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>) <span class="co"># if you have not installed &quot;devtools&quot; package</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;hoxo-m/dplyr.teradata&quot;</span>)</a></code></pre></div>
 <p>The source code for <strong>dplyr.teradata</strong> package is available on GitHub at</p>
@@ -375,21 +373,19 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </ul>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Build a query</span></a>
 <a class="sourceLine" id="cb6-2" data-line-number="2">q &lt;-<span class="st"> </span>my_table <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw">select</span>(date) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">between</span>(date, <span class="st">&quot;2017-01-01&quot;</span>, <span class="st">&quot;2017-01-03&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="st">  </span><span class="kw">arrange</span>(date)</a></code></pre></div>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">between</span>(date, <span class="st">&quot;2017-01-01&quot;</span>, <span class="st">&quot;2017-01-03&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="st">  </span><span class="kw">arrange</span>(date)</a></code></pre></div>
 <p><code>n()</code> is a function in <strong>dplyr</strong> to return the number of observations in the current group but here it will be translated to <code>count(*)</code> as a SQL function.</p>
 <p>If you want to show built queries, use <code>show_query()</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">show_query</span>(q)</a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt; &lt;SQL&gt;</span></a>
 <a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; SELECT &quot;date&quot;, count(*) AS &quot;n&quot;</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; FROM (SELECT &quot;date&quot; AS &quot;date&quot;</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; FROM &quot;my_table&quot;) &quot;jmagvgwapc&quot;</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; WHERE (&quot;date&quot; BETWEEN '2017-01-01' AND '2017-01-03')</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; GROUP BY &quot;date&quot;</span></a>
-<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; ORDER BY &quot;date&quot;</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; FROM &quot;my_table_name&quot;</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; WHERE (&quot;date&quot; BETWEEN '2017-01-01' AND '2017-01-03')</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; GROUP BY &quot;date&quot;</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; ORDER BY &quot;date&quot;</span></a></code></pre></div>
 <p>Finally, you send built queries and get its results on R using <code>collect()</code>.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Send the query and get its result on R</span></a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">df &lt;-<span class="st"> </span>q <span class="op">%&gt;%</span><span class="st"> </span>collect</a>
