@@ -7,7 +7,7 @@ A Teradata Backend for dplyr
 [![Travis-CI Build
 Status](https://travis-ci.org/hoxo-m/dplyr.teradata.svg?branch=master)](https://travis-ci.org/hoxo-m/dplyr.teradata)
 [![CRAN
-Version](http://www.r-pkg.org/badges/version/dplyr.teradata)](https://cran.r-project.org/package=dplyr.teradata)
+Version](http://www.r-pkg.org/badges/version-ago/dplyr.teradata)](https://cran.r-project.org/package=dplyr.teradata)
 [![CRAN
 Downloads](http://cranlogs.r-pkg.org/badges/dplyr.teradata)](http://cranlogs.r-pkg.org/badges/dplyr.teradata)
 [![Coverage
