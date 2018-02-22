@@ -22,4 +22,7 @@ test_that("custom scalar translated correctly", {
   expect_equal(trans(to_timestamp(x)),
                sql("CAST(DATE '1970-01-01' + (`x` / 86400) AS TIMESTAMP(0)) + (`x` MOD 86400) * (INTERVAL '00:00:01' HOUR TO SECOND)"))
   expect_equal(trans(x %% 5L), sql("`x` MOD 5"))
+  expect_equal(trans(count_if(x > 0L)), sql("SUM(CASE WHEN (`x` > 0) THEN 1 WHEN NOT(`x` > 0) THEN 0 END)"))
+  expect_equal(trans(n_if(x > 0L)), sql("SUM(CASE WHEN (`x` > 0) THEN 1 WHEN NOT(`x` > 0) THEN 0 END)"))
+  expect_equal(trans(bool_to_int(x > 0L)), sql("CASE WHEN (`x` > 0) THEN 1 WHEN NOT(`x` > 0) THEN 0 END"))
 })
