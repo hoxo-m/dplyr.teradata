@@ -87,18 +87,14 @@ setMethod(
            database = "",
            uid = NULL,
            pwd = NULL,
-           charset = c("ASCII", "UTF-8", "UTF-16"),
+           charset = NULL,
            tmode = c("ANSI", "TERA"),
            dbms.name = NULL,
            .connection_string = NULL) {
 
     # Preprocessing -----------------------------------------------------------
     bigint <- match.arg(bigint)
-    charset <- match.arg(charset)
     tmode <- match.arg(tmode)
-    if (!is.null(encoding)) {
-      charset <- encoding
-    }
     if (!is.null(server)) {
       DBCName <- server
     }
