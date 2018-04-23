@@ -9,7 +9,7 @@
 \S4method{dbConnect}{TeradataOdbcDriver}(drv, dsn = NULL, ...,
   timezone = "UTC", encoding = NULL, bigint = c("integer64", "integer",
   "numeric", "character"), driver = NULL, server = NULL, DBCName = NULL,
-  database = "", uid = NULL, pwd = NULL, charset = NULL,
+  database = "", uid = NULL, pwd = NULL, charset = "ASCII",
   tmode = c("ANSI", "TERA"), dbms.name = NULL, .connection_string = NULL)
 }
 \arguments{

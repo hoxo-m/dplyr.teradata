@@ -87,7 +87,7 @@ setMethod(
            database = "",
            uid = NULL,
            pwd = NULL,
-           charset = NULL,
+           charset = "ASCII",
            tmode = c("ANSI", "TERA"),
            dbms.name = NULL,
            .connection_string = NULL) {
