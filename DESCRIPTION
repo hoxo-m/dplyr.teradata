@@ -13,11 +13,11 @@ Imports:
     bit64,
     cli (>= 1.0.0),
     crayon (>= 1.3.4),
-    DBI (>= 0.7),
+    DBI (>= 0.8),
     dbplyr (>= 1.2.0),
     dplyr (>= 0.7.0),
     methods, 
-    odbc (>= 1.1.4),
+    odbc (>= 1.1.6),
     purrr (>= 0.2.4),
     rstudioapi (>= 0.7),
     tidyverse (>= 1.2.0)

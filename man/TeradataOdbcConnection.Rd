@@ -6,8 +6,6 @@
 \alias{show,Teradata-method}
 \alias{dbQuoteIdentifier,Teradata,character-method}
 \alias{dbQuoteIdentifier,Teradata,SQL-method}
-\alias{dbUnQuoteIdentifier,Teradata,SQL-method}
-\alias{dbUnQuoteIdentifier,Teradata,character-method}
 \alias{dbGetInfo,Teradata-method}
 \title{Teradata Odbc Connection Methods}
 \usage{
@@ -16,10 +14,6 @@
 \S4method{dbQuoteIdentifier}{Teradata,character}(conn, x, ...)
 
 \S4method{dbQuoteIdentifier}{Teradata,SQL}(conn, x, ...)
-
-\S4method{dbUnQuoteIdentifier}{Teradata,SQL}(conn, x)
-
-\S4method{dbUnQuoteIdentifier}{Teradata,character}(conn, x)
 
 \S4method{dbGetInfo}{Teradata}(dbObj, ...)
 }
