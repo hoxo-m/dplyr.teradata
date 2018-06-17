@@ -1,7 +1,7 @@
 Package: dplyr.teradata
 Type: Package
 Title: A 'Teradata' Backend for 'dplyr'
-Version: 0.2.0.9000
+Version: 0.2.0.9001
 Description: A 'Teradata' backend for 'dplyr'. It makes it possible to operate
   'Teradata' database <https://www.teradata.com/products-and-services/teradata-database/>
   in the same way as manipulating data frames with 'dplyr'.
@@ -9,18 +9,15 @@ Authors@R: person("Koji", "Makiyama", email = "hoxo.smile@gmail.com", role = c("
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends:
+    dplyr (>= 0.7.0),
+    dbplyr (>= 1.2.0)
 Imports:
     bit64,
-    cli (>= 1.0.0),
-    crayon (>= 1.3.4),
     DBI (>= 0.8),
-    dbplyr (>= 1.2.0),
-    dplyr (>= 0.7.0),
     methods, 
     odbc (>= 1.1.6),
-    purrr (>= 0.2.4),
-    rstudioapi (>= 0.7),
-    tidyverse (>= 1.2.0)
+    rstudioapi (>= 0.7)
 Suggests:
     blob,
     covr,
