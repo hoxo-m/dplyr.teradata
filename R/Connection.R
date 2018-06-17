@@ -68,20 +68,6 @@ setMethod(
   })
 
 #' @rdname TeradataOdbcConnection
-#' @inheritParams DBI::dbQuoteIdentifier
-#' @export
-setMethod(
-  "dbUnQuoteIdentifier", c("Teradata", "SQL"),
-  getMethod("dbUnQuoteIdentifier", c("OdbcConnection", "SQL")))
-
-#' @rdname TeradataOdbcConnection
-#' @inheritParams DBI::dbQuoteIdentifier
-#' @export
-setMethod(
-  "dbUnQuoteIdentifier", c("Teradata", "character"),
-  getMethod("dbUnQuoteIdentifier", c("OdbcConnection", "SQL")))
-
-#' @rdname TeradataOdbcConnection
 #' @inheritParams DBI::dbGetInfo
 #' @export
 setMethod(
