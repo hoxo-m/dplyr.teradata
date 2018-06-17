@@ -1,5 +1,9 @@
 # dplyr.teradata 0.2.0.9001
 
+## New features
+
+- Add `sample_n()`
+
 ## Changes
 
 - Remove dependency to **tidyverse**
