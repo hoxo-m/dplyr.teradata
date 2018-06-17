@@ -98,7 +98,7 @@ The package uses the **odbc** package to connect database and the
 First, you need to establish an ODBC connection to Teradata. See:
 
 -   [README - **odbc**
-    package](https://CRAN.R-project.org/package=odbc/README.html).
+    package](https://CRAN.R-project.org/package=odbc/readme/README.html).
 
 The **dplyr.teradata** package has special driver function `todbc()`.
 

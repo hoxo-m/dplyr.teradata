@@ -1,8 +1,8 @@
-# dplyr.teradata 0.2.0.9001
+# dplyr.teradata 0.3.0
 
 ## New features
 
-- Add `sample_n()`
+- Add `sample_n()` (#17)
 
 ## Changes
 
