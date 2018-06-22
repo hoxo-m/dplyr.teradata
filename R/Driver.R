@@ -113,7 +113,7 @@ setMethod(
     options(connectionObserver = NULL)
     tryCatch({
       con <- dbConnectODBC(
-        drv, timezone = timezone, encoding = "", bigint = bigint,
+        drv, timezone = timezone, encoding = encoding, bigint = bigint,
         driver = driver, DBCName = DBCName, database = database,
         uid = uid, pwd = pwd, charset = charset, tmode = tmode, port = port,
         dbms.name = dbms.name,
