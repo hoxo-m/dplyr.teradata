@@ -79,7 +79,7 @@ setMethod(
            dsn = NULL,
            ...,
            timezone = "UTC",
-           encoding = NULL,
+           encoding = "UTF-8",
            bigint = c("integer64", "integer", "numeric", "character"),
            driver = NULL,
            server = NULL,
