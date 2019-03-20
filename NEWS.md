@@ -1,3 +1,9 @@
+# dplyr.teradata 0.3.1
+
+## Changes
+
+- Add the dots arguments to sample_n() for dplyr 0.8. See https://github.com/tidyverse/dplyr/blob/master/NEWS.md#breaking-changes.
+
 # dplyr.teradata 0.3.0
 
 ## New features
