@@ -1,13 +1,15 @@
 Package: dplyr.teradata
 Type: Package
 Title: A 'Teradata' Backend for 'dplyr'
-Version: 0.3.1
+Version: 0.3.1.9000
 Description: A 'Teradata' backend for 'dplyr'. It makes it possible to operate
   'Teradata' database <https://www.teradata.com/products-and-services/teradata-database/>
   in the same way as manipulating data frames with 'dplyr'.
 Authors@R: c(
     person("Koji", "Makiyama", email = "hoxo.smile@gmail.com", role = c("cre", "aut")),
     person("Jim", "Hester", role = "ctb"))
+URL: https://github.com/hoxo-m/dplyr.teradata
+BugReports: https://github.com/hoxo-m/dplyr.teradata/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
