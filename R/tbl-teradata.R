@@ -70,7 +70,7 @@ collect.tbl_teradata <- function(x, ..., n = Inf, warn_incomplete = TRUE, safety
 #' @importFrom dplyr sample_n
 #' @export
 sample_n.tbl_teradata <- function(tbl, size, replace = NULL, weight = NULL,
-                                  .env = NULL) {
+                                  .env = NULL, ...) {
   if (!is.null(replace) || !is.null(weight) || !is.null(.env)) {
     warning("sample_n() has not implemented for arguments replace, weight and .env")
   }

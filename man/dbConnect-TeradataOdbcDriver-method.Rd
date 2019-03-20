@@ -7,10 +7,11 @@
 \title{Connect to a Teradata ODBC compatible database}
 \usage{
 \S4method{dbConnect}{TeradataOdbcDriver}(drv, dsn = NULL, ...,
-  timezone = "UTC", encoding = "UTF-8", bigint = c("integer64", "integer",
-  "numeric", "character"), driver = NULL, server = NULL, DBCName = NULL,
-  database = "", uid = NULL, pwd = NULL, charset = "ASCII",
-  tmode = c("ANSI", "TERA"), dbms.name = NULL, .connection_string = NULL)
+  timezone = "UTC", encoding = "UTF-8", bigint = c("integer64",
+  "integer", "numeric", "character"), driver = NULL, server = NULL,
+  DBCName = NULL, database = "", uid = NULL, pwd = NULL,
+  charset = "ASCII", tmode = c("ANSI", "TERA"), dbms.name = NULL,
+  .connection_string = NULL)
 }
 \arguments{
 \item{drv}{an object that inherits from \linkS4class{DBIDriver},
