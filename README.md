@@ -2,7 +2,7 @@
 
 # A Teradata Backend for dplyr
 
-#### *Koji Makiyama (@hoxo\_m)*
+#### *Koji Makiyama (@hoxo-m)*
 
 [![Travis-CI Build
 Status](https://travis-ci.org/hoxo-m/dplyr.teradata.svg?branch=master)](https://travis-ci.org/hoxo-m/dplyr.teradata)

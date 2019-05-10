@@ -10,7 +10,7 @@ output:
 
 # A Teradata Backend for dplyr
 
-#### *Koji Makiyama (@hoxo_m)*
+#### *Koji Makiyama (@hoxo-m)*
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(

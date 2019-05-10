@@ -1,6 +1,6 @@
 ---
 title: "A Teradata Backend for dplyr"
-author: "Koji MAKIYAMA (@hoxo_m)"
+author: "Koji Makiyama (@hoxo-m)"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -190,6 +190,8 @@ trans <- function(x) {
 ```
 
 #### 3.2.1 **lubridate** friendly functions
+
+⚠️ This has been supported by **dbplyr** 1.4.0. See https://github.com/tidyverse/dbplyr/blob/master/NEWS.md#sql-translations.
 
 You might familiar the **lubridate** package to manipulate date and time data.
 
