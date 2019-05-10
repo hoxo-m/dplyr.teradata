@@ -1,46 +1,6 @@
 #' @import dbplyr
 NULL
 
-# case when ---------------------------------------------------------------
-sql_case_when <- function(...) {
-  formulas <- list(...)
-  n <- length(formulas)
-  if (n == 0) {
-    stop("No cases provided", call. = FALSE)
-  }
-  query <- vector("list", n)
-  value <- vector("list", n)
-  for (i in seq_len(n)) {
-    f <- formulas[[i]]
-    if (length(f) != 3) {
-      stop("Case ", i, " (", f, ") is not a two-sided formula", call. = FALSE)
-    }
-    query[[i]] <- translate_sql_(list(f[[2]]))
-    value[[i]] <- translate_sql_(list(f[[3]]))
-  }
-  sql <- build_sql("CASE")
-  for (i in seq_len(n)) {
-    if (query[[i]] == "TRUE") break
-    sql <- build_sql(sql, " WHEN ", query[[i]], " THEN ", value[[i]])
-  }
-  if (query[[i]] == "TRUE") {
-    sql <- build_sql(sql, " ELSE ", value[[i]])
-  }
-  sql <- build_sql(sql, " END")
-  sql
-}
-
-# extract -----------------------------------------------------------------
-make_extract <- function(target) {
-  function(date_column) {
-    build_sql("EXTRACT(", sql(target), " FROM ", date_column, ")")
-  }
-}
-
-sql_extract <- function(target, date_column) {
-  make_extract(target)(date_column)
-}
-
 # cut ---------------------------------------------------------------------
 sql_cut <- function(x, breaks = NULL, labels = NULL,
                          include.lowest = FALSE, right = TRUE, dig.lab = 3,

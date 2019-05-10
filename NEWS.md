@@ -1,3 +1,9 @@
+# dplyr.teradata 0.3.2
+
+## Changes
+
+- Delegate SQL translations of `case_when()` and **lubridate**-family (e.g. `year()`, `month()`, `day()`) to **dbplyr**. See https://github.com/tidyverse/dbplyr/blob/master/NEWS.md#sql-translations.
+
 # dplyr.teradata 0.3.1
 
 ## Changes

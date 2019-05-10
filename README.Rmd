@@ -1,9 +1,9 @@
 ---
 output:
   md_document:
-    variant: markdown_github
+    variant: gfm
   html_document:
-    keep_md: true
+    keep_md: false
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -16,9 +16,9 @@ output:
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "README-",
-  eval = FALSE,
-  message = FALSE
+  fig.path = "man/figures/README-",
+  message = FALSE,
+  eval = FALSE
 )
 ```
 
@@ -198,6 +198,8 @@ trans <- function(x) {
 ```
 
 #### 3.2.1 **lubridate** friendly functions
+
+⚠️ This has been supported by **dbplyr** 1.4.0. See https://github.com/tidyverse/dbplyr/blob/master/NEWS.md#sql-translations.
 
 You might familiar the **lubridate** package to manipulate date and time data.
 
