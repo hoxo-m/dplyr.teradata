@@ -4,12 +4,19 @@
 
 #### *Koji Makiyama (@hoxo-m)*
 
+<!-- badges: start -->
+
 [![Travis-CI Build
 Status](https://travis-ci.org/hoxo-m/dplyr.teradata.svg?branch=master)](https://travis-ci.org/hoxo-m/dplyr.teradata)
 [![CRAN
 Version](http://www.r-pkg.org/badges/version-ago/dplyr.teradata)](https://cran.r-project.org/package=dplyr.teradata)
-<http://cranlogs.r-pkg.org/badges/dplyr.teradata> [![Coverage
+[![CRAN
+Downloads](http://cranlogs.r-pkg.org/badges/dplyr.teradata)](http://cranlogs.r-pkg.org/badges/dplyr.teradata/)
+[![Coverage
 Status](https://img.shields.io/coveralls/hoxo-m/dplyr.teradata.svg)](https://coveralls.io/r/hoxo-m/dplyr.teradata?branch=master)
+[![Say
+Thanks\!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/hoxo-m)
+<!-- badges: end -->
 
 ## 1 Overview
 
@@ -329,7 +336,3 @@ blob_to_string(x)
 
   - [A ‘dplyr’ Backend for Databases •
     dbplyr](http://dbplyr.tidyverse.org/)
-  - [A Teradata backend for
-    dplyr](https://github.com/xiaodaigh/teradata.dplyr)
-  - [Dplyr backends: the ultimate
-    collection](https://gist.github.com/piccolbo/3d8ac40291f4eaee644b)
