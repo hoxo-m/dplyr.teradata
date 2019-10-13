@@ -18,7 +18,7 @@ Depends:
     dbplyr (>= 1.4.0)
 Imports:
     bit64,
-    DBI (>= 0.8),
+    DBI (>= 1.0.0.9003),
     methods, 
     odbc (>= 1.1.6),
     rstudioapi (>= 0.7)
