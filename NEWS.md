@@ -1,3 +1,9 @@
+# dplyr.teradata 0.4.0
+
+## Fix Bugs
+
+- Fix `sample_n()`.
+
 # dplyr.teradata 0.3.2
 
 ## Changes
