@@ -18,6 +18,12 @@ NULL
 #' todbc()
 #' }
 todbc <- function() {
+  message <- paste(
+    "Hint: for versions of Teradata ODBC Driver 15.10 and earlier,",
+    "you may need to set like dbConnect(odbc(), ..., dbms.name = 'Teradata')"
+  )
+  .Deprecated("odbc::odbc")
+  .Deprecated(msg = message)
   new("TeradataOdbcDriver")
 }
 
