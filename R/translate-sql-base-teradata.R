@@ -114,12 +114,29 @@ sql_mod <- function(x, divisor) {
   build_sql(x, " MOD ", divisor)
 }
 
-# count_if
+# count_if ----------------------------------------------------------------
 sql_count_if <- function(cond) {
   build_sql("SUM(CASE WHEN (", cond, ") THEN 1 WHEN NOT(", cond, ") THEN 0 END)")
 }
 
-# bool_to_int
+# bool_to_int -------------------------------------------------------------
 sql_bool_to_int <- function(cond) {
   build_sql("CASE WHEN (", cond, ") THEN 1 WHEN NOT(", cond, ") THEN 0 END")
 }
+
+# dummy functions ---------------------------------------------------------
+# Export dummy functions to make code completion work.
+# Note: cut has the original function base::cut
+
+#' @export
+like <- function(x, pattern) stop("unimplemented function")
+#' @export
+to_timestamp <- function(x) stop("unimplemented function")
+#' @export
+mod <- function(x, divisor) stop("unimplemented function")
+#' @export
+count_if <- function(cond) stop("unimplemented function")
+#' @export
+n_if <- function(cond) stop("unimplemented function")
+#' @export
+bool_to_int <- function(cond) stop("unimplemented function")
