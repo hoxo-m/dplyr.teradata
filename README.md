@@ -14,11 +14,9 @@ Version](http://www.r-pkg.org/badges/version-ago/dplyr.teradata)](https://cran.r
 Downloads](http://cranlogs.r-pkg.org/badges/dplyr.teradata)](http://cranlogs.r-pkg.org/badges/dplyr.teradata/)
 [![Coverage
 Status](https://img.shields.io/coveralls/hoxo-m/dplyr.teradata.svg)](https://coveralls.io/r/hoxo-m/dplyr.teradata?branch=master)
-[![Say
-Thanks\!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/hoxo-m)
 <!-- badges: end -->
 
-## 1 Overview
+## 1\. Overview
 
 The package provides a Teradata backend for **dplyr**.
 
@@ -61,7 +59,7 @@ df
 #>  3 2017-01-03 12131415
 ```
 
-## 2 Installation
+## 2\. Installation
 
 You can install the **dplyr.teradata** package from CRAN.
 
@@ -69,8 +67,7 @@ You can install the **dplyr.teradata** package from CRAN.
 install.packages("dplyr.teradata")
 ```
 
-You can also install the development version of the package from
-GitHub.
+You can also install the development version of the package from GitHub.
 
 ``` r
 install.packages("devtools") # if you have not installed "devtools" package
@@ -81,7 +78,7 @@ The source code for **dplyr.teradata** package is available on GitHub at
 
   - <https://github.com/hoxo-m/dplyr.teradata>.
 
-## 3 Details
+## 3\. Motivation
 
 The package provides a Teradata backend for **dplyr**. It makes it
 possible to build SQL for [Teradata
@@ -93,7 +90,7 @@ Therefore, you can complete data analysis with Teradata only on R. It
 means that you are freed from troublesome switching of tools and
 switching thoughts that cause mistakes.
 
-### 3.1 Usage
+## 4\. Usage
 
 The package uses the **odbc** package to connect database and the
 **dbplyr** package to build SQL.
@@ -103,11 +100,11 @@ First, you need to establish an ODBC connection to Teradata. See:
   - [README - **odbc**
     package](https://CRAN.R-project.org/package=odbc/readme/README.html).
 
-The **dplyr.teradata** package has special driver function `todbc()`.
+<!-- end list -->
 
 ``` r
 # Establish a connection to Teradata
-con <- dbConnect(todbc(), 
+con <- dbConnect(odbc(), 
                  driver = "{Teradata Driver}", DBCName = "host_name_or_IP_address",
                  uid = "user_name", pwd = "*****")
 ```
@@ -138,7 +135,7 @@ For example, you can use follows:
   - `mutate()` adds new *columns* that are functions of existing
     *columns*.
   - `select()` picks *columns* based on their names.
-  - `filter()` picks cases based on their values.
+  - `filter()` picks *rows* based on their values.
   - `summarise()` reduces multiple values down to a single summary.
   - `arrange()` changes the ordering of the rows.
 
@@ -153,8 +150,8 @@ q <- my_table %>%
   arrange(date)
 ```
 
-`n()` is a function in **dplyr** to return the number of observations in
-the current group but here it will be translated to `count(*)` as a SQL
+`n()` is a function in **dplyr** to return the number of rows in the
+current group but here it will be translated to `count(*)` as a SQL
 function.
 
 If you want to show built queries, use `show_query()`:
@@ -184,7 +181,7 @@ df
 #>  3 2017-01-03 12131415
 ```
 
-### 3.2 Translatable functions
+## 5\. Translatable functions
 
 The package mainly use **dbplyr** to translate manipulations into
 queries.
@@ -202,33 +199,11 @@ To know translatable functions for Teradata, refer the following:
 Here, we introduce the special translatable functions that it becomes
 available by **dplyr.teradata**.
 
-#### 3.2.1 **lubridate** friendly functions
+### 5.1. Treat Boolean
 
-⚠️ This has been supported by **dbplyr** 1.4.0. See
-<https://github.com/tidyverse/dbplyr/blob/master/NEWS.md#sql-translations>.
-
-You might familiar the **lubridate** package to manipulate date and time
-data.
-
-**dplyr.teradata** has **lubridate** friendly functions:
-
-  - `year()`, `month()`, `day()`, `hour()`, `minutes()` and `second()`.
-
-For example, you can pick year from date type column.
-
-``` r
-mutate(year = year(date_type_column))
-```
-
-Such as above manipulation is translated into SQL like following:
-
-    #> <SQL> EXTRACT(year FROM `date_type_column`)
-
-#### 3.2.2 Treat Boolean
-
-Teradata does not have the boolean data type. So when we use boolean, we
-need to write some complex statements. The package has several functions
-to treat briefly.
+Teradata does not have the boolean data type. So when you use boolean,
+you need to write some complex statements. The package has several
+functions to treat it briefly.
 
 `bool_to_int` transforms boolean to integer.
 
@@ -238,8 +213,7 @@ mutate(is_positive = bool_to_int(x > 0L))
 
     #> <SQL> CASE WHEN (`x` > 0) THEN 1 WHEN NOT(`x` > 0) THEN 0 END
 
-`count_if()` or `n_if()` counts a number of rows satisfying a
-    condition.
+`count_if()` or `n_if()` counts a number of rows satisfying a condition.
 
 ``` r
 summarize(n = count_if(x > 0L))
@@ -247,10 +221,10 @@ summarize(n = count_if(x > 0L))
 
     #> <SQL> SUM(CASE WHEN (`x` > 0) THEN 1 WHEN NOT(`x` > 0) THEN 0 END)
 
-#### 3.2.3 `to_timestamp()`
+### 5.2. `to_timestamp()`
 
-If your table has a column stored UNIX time and you want to convert it
-to timestamp, you need to write complex SQL.
+When your tables has some columns stored UNIX time and you want to
+convert it to timestamp, you need to write complex SQL.
 
 `to_timestamp()` is a translatable function that makes it easy.
 
@@ -258,12 +232,11 @@ to timestamp, you need to write complex SQL.
 mutate(ts = to_timestamp(unixtime_column))
 ```
 
-Such as above manipulation is translated into SQL like
-    following:
+Such as above manipulation is translated into SQL like following:
 
     #> <SQL> CAST(DATE '1970-01-01' + (`unixtime_column` / 86400) AS TIMESTAMP(0)) + (`unixtime_column` MOD 86400) * (INTERVAL '00:00:01' HOUR TO SECOND)
 
-#### 3.2.4 `cut()`
+### 5.3. `cut()`
 
 `cut()` is very useful function that you can use in base R.
 
@@ -308,9 +281,9 @@ mutate(y = cut(x, breaks, labels = "-", include.lowest = TRUE))
     #>  ELSE NULL
     #> END
 
-### 3.3 Other useful functions
+## 6\. Other useful functions
 
-#### 3.3.1 `blob_to_string()`
+### 6.1. `blob_to_string()`
 
 The `blob` object from databases sometimes prevents manipulations with
 **dplyr**.
@@ -320,8 +293,9 @@ You might want to convert them to string.
 `blob_to_string()` is a function to make it easy:
 
 ``` r
-x <- blob::as.blob("Good morning")
+x <- blob::as_blob("Good morning")
 x
+#> <blob[1]>
 #> [1] blob[12 B]
 
 # print raw data in blob
@@ -332,7 +306,7 @@ blob_to_string(x)
 #> [1] "476f6f64206d6f726e696e67"
 ```
 
-## 4 Related work
+## 7\. Related work
 
   - [A ‘dplyr’ Backend for Databases •
     dbplyr](http://dbplyr.tidyverse.org/)
