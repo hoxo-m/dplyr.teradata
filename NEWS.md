@@ -1,3 +1,16 @@
+# dplyr.teradata 0.4.0
+
+- Now supports for **dplyr** 1.0.0 and **dbplyr** 2.0.0 (#26)
+
+## Changes
+
+- Delegate Teradata Odbc Connection Methods to **odbc** (#27)
+- Deprecate `todbc()` (#28). Use `odbc::odbc()` instead. If you use the versions of Teradata ODBC Driver 15.20 or earlier, you may need to set like `dbConnect(odbc(), ..., dbms.name = 'Teradata')`. 
+
+## Improvements
+
+- Export dummy functions (`like`, `to_timestamp`, `mod`, `count_if`, `n_if` and `bool_to_int`) to make code completion work (#29). These functions can only be used inside the functions to build queries (e.g. `mutate`).
+
 # dplyr.teradata 0.3.2
 
 ## Changes
