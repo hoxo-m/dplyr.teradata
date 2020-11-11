@@ -1,28 +1,92 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Koji Makiyama (@hoxo-m)" />
 
-<meta name="date" content="2019-05-10" />
+<meta name="date" content="2020-11-11" />
 
 <title>A Teradata Backend for dplyr</title>
 
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+<style type="text/css">
+a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
+a.anchor-section::before {content: '#';}
+.hasAnchor:hover a.anchor-section {visibility: visible;}
+</style>
+<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
+document.addEventListener('DOMContentLoaded', function() {
+  // Do nothing if AnchorJS is used
+  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
+    return;
+  }
+
+  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+  // Do nothing if sections are already anchored
+  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
+    return null;
+  }
+
+  // Use section id when pandoc runs with --section-divs
+  const section_id = function(x) {
+    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
+            ? x.id : '');
+  };
+
+  // Add anchors
+  h.forEach(function(x) {
+    const id = x.id || section_id(x.parentElement);
+    if (id === '') {
+      return null;
+    }
+    let anchor = document.createElement('a');
+    anchor.href = '#' + id;
+    anchor.classList = ['anchor-section'];
+    x.classList.add('hasAnchor');
+    x.appendChild(anchor);
+  });
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 div.sourceCode { margin: 1em 0; }
@@ -32,14 +96,16 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -48,9 +114,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -96,7 +162,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -117,9 +183,6 @@ padding-right: 2em;
 font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-size: 14px;
 line-height: 1.35;
-}
-#header {
-text-align: center;
 }
 #TOC {
 clear: both;
@@ -288,7 +351,8 @@ code > span.st { color: #d14; }
 code > span.co { color: #888888; font-style: italic; } 
 code > span.ot { color: #007020; } 
 code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
@@ -303,85 +367,85 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">A Teradata Backend for dplyr</h1>
 <h4 class="author">Koji Makiyama (<span class="citation">@hoxo-m</span>)</h4>
-<h4 class="date">2019-05-10</h4>
+<h4 class="date">2020-11-11</h4>
 
 
 
 <div id="overview" class="section level2">
-<h2>1 Overview</h2>
+<h2>1. Overview</h2>
 <p>The package provides a Teradata backend for <strong>dplyr</strong>.</p>
 <p>It makes it possible to operate <a href="https://www.teradata.com/products-and-services/teradata-database/">Teradata Database</a> in the same way as manipulating data frames with <strong>dplyr</strong>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(dplyr.teradata)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># Establish a connection to Teradata</span></a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="kw">todbc</span>(), </a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">                 <span class="dt">driver =</span> <span class="st">&quot;{Teradata Driver}&quot;</span>, <span class="dt">DBCName =</span> <span class="st">&quot;host_name_or_IP_address&quot;</span>,</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">                 <span class="dt">uid =</span> <span class="st">&quot;user_name&quot;</span>, <span class="dt">pwd =</span> <span class="st">&quot;*****&quot;</span>)</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">my_table &lt;-<span class="st"> </span><span class="kw">tbl</span>(con, <span class="st">&quot;my_table_name&quot;</span>)</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb1-9" data-line-number="9"><span class="co"># Build a query</span></a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">q &lt;-<span class="st"> </span>my_table <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1-11" data-line-number="11"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">between</span>(date, <span class="st">&quot;2017-01-01&quot;</span>, <span class="st">&quot;2017-01-03&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb1-12" data-line-number="12"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14"><span class="st">  </span><span class="kw">arrange</span>(date)</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb1-16" data-line-number="16"><span class="kw">show_query</span>(q)</a>
-<a class="sourceLine" id="cb1-17" data-line-number="17"><span class="co">#&gt; &lt;SQL&gt;</span></a>
-<a class="sourceLine" id="cb1-18" data-line-number="18"><span class="co">#&gt; SELECT &quot;date&quot;, count(*) AS &quot;n&quot;</span></a>
-<a class="sourceLine" id="cb1-19" data-line-number="19"><span class="co">#&gt; FROM &quot;my_table_name&quot;</span></a>
-<a class="sourceLine" id="cb1-20" data-line-number="20"><span class="co">#&gt; WHERE (&quot;date&quot; BETWEEN '2017-01-01' AND '2017-01-03')</span></a>
-<a class="sourceLine" id="cb1-21" data-line-number="21"><span class="co">#&gt; GROUP BY &quot;date&quot;</span></a>
-<a class="sourceLine" id="cb1-22" data-line-number="22"><span class="co">#&gt; ORDER BY &quot;date&quot;</span></a>
-<a class="sourceLine" id="cb1-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb1-24" data-line-number="24"><span class="co"># Send the query and get its result on R</span></a>
-<a class="sourceLine" id="cb1-25" data-line-number="25">df &lt;-<span class="st"> </span>q <span class="op">%&gt;%</span><span class="st"> </span>collect</a>
-<a class="sourceLine" id="cb1-26" data-line-number="26">df</a>
-<a class="sourceLine" id="cb1-27" data-line-number="27"><span class="co">#&gt; # A tibble: 3 x 2</span></a>
-<a class="sourceLine" id="cb1-28" data-line-number="28"><span class="co">#&gt;          date        n</span></a>
-<a class="sourceLine" id="cb1-29" data-line-number="29"><span class="co">#&gt;        &lt;date&gt;    &lt;int&gt;</span></a>
-<a class="sourceLine" id="cb1-30" data-line-number="30"><span class="co">#&gt;  1 2017-01-01   123456</span></a>
-<a class="sourceLine" id="cb1-31" data-line-number="31"><span class="co">#&gt;  2 2017-01-02  7891011</span></a>
-<a class="sourceLine" id="cb1-32" data-line-number="32"><span class="co">#&gt;  3 2017-01-03 12131415</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(dplyr.teradata)</span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="co"># Establish a connection to Teradata</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a>con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="kw">todbc</span>(), </span>
+<span id="cb1-5"><a href="#cb1-5"></a>                 <span class="dt">driver =</span> <span class="st">&quot;{Teradata Driver}&quot;</span>, <span class="dt">DBCName =</span> <span class="st">&quot;host_name_or_IP_address&quot;</span>,</span>
+<span id="cb1-6"><a href="#cb1-6"></a>                 <span class="dt">uid =</span> <span class="st">&quot;user_name&quot;</span>, <span class="dt">pwd =</span> <span class="st">&quot;*****&quot;</span>)</span>
+<span id="cb1-7"><a href="#cb1-7"></a>my_table &lt;-<span class="st"> </span><span class="kw">tbl</span>(con, <span class="st">&quot;my_table_name&quot;</span>)</span>
+<span id="cb1-8"><a href="#cb1-8"></a></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="co"># Build a query</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a>q &lt;-<span class="st"> </span>my_table <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">between</span>(date, <span class="st">&quot;2017-01-01&quot;</span>, <span class="st">&quot;2017-01-03&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></span>
+<span id="cb1-13"><a href="#cb1-13"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="st">  </span><span class="kw">arrange</span>(date)</span>
+<span id="cb1-15"><a href="#cb1-15"></a></span>
+<span id="cb1-16"><a href="#cb1-16"></a><span class="kw">show_query</span>(q)</span>
+<span id="cb1-17"><a href="#cb1-17"></a><span class="co">#&gt; &lt;SQL&gt;</span></span>
+<span id="cb1-18"><a href="#cb1-18"></a><span class="co">#&gt; SELECT &quot;date&quot;, count(*) AS &quot;n&quot;</span></span>
+<span id="cb1-19"><a href="#cb1-19"></a><span class="co">#&gt; FROM &quot;my_table_name&quot;</span></span>
+<span id="cb1-20"><a href="#cb1-20"></a><span class="co">#&gt; WHERE (&quot;date&quot; BETWEEN &#39;2017-01-01&#39; AND &#39;2017-01-03&#39;)</span></span>
+<span id="cb1-21"><a href="#cb1-21"></a><span class="co">#&gt; GROUP BY &quot;date&quot;</span></span>
+<span id="cb1-22"><a href="#cb1-22"></a><span class="co">#&gt; ORDER BY &quot;date&quot;</span></span>
+<span id="cb1-23"><a href="#cb1-23"></a></span>
+<span id="cb1-24"><a href="#cb1-24"></a><span class="co"># Send the query and get its result on R</span></span>
+<span id="cb1-25"><a href="#cb1-25"></a>df &lt;-<span class="st"> </span>q <span class="op">%&gt;%</span><span class="st"> </span>collect</span>
+<span id="cb1-26"><a href="#cb1-26"></a>df</span>
+<span id="cb1-27"><a href="#cb1-27"></a><span class="co">#&gt; # A tibble: 3 x 2</span></span>
+<span id="cb1-28"><a href="#cb1-28"></a><span class="co">#&gt;          date        n</span></span>
+<span id="cb1-29"><a href="#cb1-29"></a><span class="co">#&gt;        &lt;date&gt;    &lt;int&gt;</span></span>
+<span id="cb1-30"><a href="#cb1-30"></a><span class="co">#&gt;  1 2017-01-01   123456</span></span>
+<span id="cb1-31"><a href="#cb1-31"></a><span class="co">#&gt;  2 2017-01-02  7891011</span></span>
+<span id="cb1-32"><a href="#cb1-32"></a><span class="co">#&gt;  3 2017-01-03 12131415</span></span></code></pre></div>
 </div>
 <div id="installation" class="section level2">
-<h2>2 Installation</h2>
+<h2>2. Installation</h2>
 <p>You can install the <strong>dplyr.teradata</strong> package from CRAN.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;dplyr.teradata&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">install.packages</span>(<span class="st">&quot;dplyr.teradata&quot;</span>)</span></code></pre></div>
 <p>You can also install the development version of the package from GitHub.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>) <span class="co"># if you have not installed &quot;devtools&quot; package</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;hoxo-m/dplyr.teradata&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>) <span class="co"># if you have not installed &quot;devtools&quot; package</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;hoxo-m/dplyr.teradata&quot;</span>)</span></code></pre></div>
 <p>The source code for <strong>dplyr.teradata</strong> package is available on GitHub at</p>
 <ul>
 <li><a href="https://github.com/hoxo-m/dplyr.teradata" class="uri">https://github.com/hoxo-m/dplyr.teradata</a>.</li>
 </ul>
 </div>
-<div id="details" class="section level2">
-<h2>3 Details</h2>
+<div id="motivation" class="section level2">
+<h2>3. Motivation</h2>
 <p>The package provides a Teradata backend for <strong>dplyr</strong>. It makes it possible to build SQL for <a href="https://www.teradata.com/products-and-services/teradata-database/">Teradata Database</a> in the same way as manipulating data frames with the <strong>dplyr</strong> package. It also can send the queries and then receive its results on R.</p>
 <p>Therefore, you can complete data analysis with Teradata only on R. It means that you are freed from troublesome switching of tools and switching thoughts that cause mistakes.</p>
-<div id="usage" class="section level3">
-<h3>3.1 Usage</h3>
+</div>
+<div id="usage" class="section level2">
+<h2>4. Usage</h2>
 <p>The package uses the <strong>odbc</strong> package to connect database and the <strong>dbplyr</strong> package to build SQL.</p>
 <p>First, you need to establish an ODBC connection to Teradata. See:</p>
 <ul>
 <li><a href="https://CRAN.R-project.org/package=odbc/readme/README.html">README - <strong>odbc</strong> package</a>.</li>
 </ul>
-<p>The <strong>dplyr.teradata</strong> package has special driver function <code>todbc()</code>.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Establish a connection to Teradata</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="kw">todbc</span>(), </a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">                 <span class="dt">driver =</span> <span class="st">&quot;{Teradata Driver}&quot;</span>, <span class="dt">DBCName =</span> <span class="st">&quot;host_name_or_IP_address&quot;</span>,</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">                 <span class="dt">uid =</span> <span class="st">&quot;user_name&quot;</span>, <span class="dt">pwd =</span> <span class="st">&quot;*****&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># Establish a connection to Teradata</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>con &lt;-<span class="st"> </span><span class="kw">dbConnect</span>(<span class="kw">odbc</span>(), </span>
+<span id="cb4-3"><a href="#cb4-3"></a>                 <span class="dt">driver =</span> <span class="st">&quot;{Teradata Driver}&quot;</span>, <span class="dt">DBCName =</span> <span class="st">&quot;host_name_or_IP_address&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4"></a>                 <span class="dt">uid =</span> <span class="st">&quot;user_name&quot;</span>, <span class="dt">pwd =</span> <span class="st">&quot;*****&quot;</span>)</span></code></pre></div>
 <p>Second, you need to specify a table to build SQL. See:</p>
 <ul>
 <li><a href="http://dbplyr.tidyverse.org/articles/dbplyr.html">Introduction to dbplyr • dbplyr</a>.</li>
 </ul>
 <p>To specify a table, you can use <code>tbl()</code>:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Getting table</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">my_table &lt;-<span class="st"> </span><span class="kw">tbl</span>(con, <span class="st">&quot;my_table_name&quot;</span>)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co"># Getting table in schema</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">my_table &lt;-<span class="st"> </span><span class="kw">tbl</span>(con, <span class="st">&quot;my_schema_name.my_table_name&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Getting table</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>my_table &lt;-<span class="st"> </span><span class="kw">tbl</span>(con, <span class="st">&quot;my_table_name&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># Getting table in schema</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a>my_table &lt;-<span class="st"> </span><span class="kw">tbl</span>(con, <span class="st">&quot;my_schema_name.my_table_name&quot;</span>)</span></code></pre></div>
 <p>Third, you build queries. It can do in the same way as manipulating data frames with <strong>dplyr</strong>:</p>
 <ul>
 <li><a href="http://dplyr.tidyverse.org/">A Grammar of Data Manipulation • dplyr</a>.</li>
@@ -390,38 +454,38 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <ul>
 <li><code>mutate()</code> adds new <em>columns</em> that are functions of existing <em>columns</em>.</li>
 <li><code>select()</code> picks <em>columns</em> based on their names.</li>
-<li><code>filter()</code> picks cases based on their values.</li>
+<li><code>filter()</code> picks <em>rows</em> based on their values.</li>
 <li><code>summarise()</code> reduces multiple values down to a single summary.</li>
 <li><code>arrange()</code> changes the ordering of the rows.</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Build a query</span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">q &lt;-<span class="st"> </span>my_table <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span><span class="kw">filter</span>(<span class="kw">between</span>(date, <span class="st">&quot;2017-01-01&quot;</span>, <span class="st">&quot;2017-01-03&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="st">  </span><span class="kw">arrange</span>(date)</a></code></pre></div>
-<p><code>n()</code> is a function in <strong>dplyr</strong> to return the number of observations in the current group but here it will be translated to <code>count(*)</code> as a SQL function.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># Build a query</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>q &lt;-<span class="st"> </span>my_table <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">between</span>(date, <span class="st">&quot;2017-01-01&quot;</span>, <span class="st">&quot;2017-01-03&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="st">  </span><span class="kw">group_by</span>(date) <span class="op">%&gt;%</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="st">  </span><span class="kw">arrange</span>(date)</span></code></pre></div>
+<p><code>n()</code> is a function in <strong>dplyr</strong> to return the number of rows in the current group but here it will be translated to <code>count(*)</code> as a SQL function.</p>
 <p>If you want to show built queries, use <code>show_query()</code>:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw">show_query</span>(q)</a>
-<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="co">#&gt; &lt;SQL&gt;</span></a>
-<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; SELECT &quot;date&quot;, count(*) AS &quot;n&quot;</span></a>
-<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; FROM &quot;my_table_name&quot;</span></a>
-<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; WHERE (&quot;date&quot; BETWEEN '2017-01-01' AND '2017-01-03')</span></a>
-<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; GROUP BY &quot;date&quot;</span></a>
-<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; ORDER BY &quot;date&quot;</span></a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">show_query</span>(q)</span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co">#&gt; &lt;SQL&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a><span class="co">#&gt; SELECT &quot;date&quot;, count(*) AS &quot;n&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="co">#&gt; FROM &quot;my_table_name&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a><span class="co">#&gt; WHERE (&quot;date&quot; BETWEEN &#39;2017-01-01&#39; AND &#39;2017-01-03&#39;)</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a><span class="co">#&gt; GROUP BY &quot;date&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="co">#&gt; ORDER BY &quot;date&quot;</span></span></code></pre></div>
 <p>Finally, you send built queries and get its results on R using <code>collect()</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="co"># Send the query and get its result on R</span></a>
-<a class="sourceLine" id="cb8-2" data-line-number="2">df &lt;-<span class="st"> </span>q <span class="op">%&gt;%</span><span class="st"> </span>collect</a>
-<a class="sourceLine" id="cb8-3" data-line-number="3">df</a>
-<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; # A tibble: 3 x 2</span></a>
-<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt;          date        n</span></a>
-<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt;        &lt;date&gt;    &lt;int&gt;</span></a>
-<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt;  1 2017-01-01   123456</span></a>
-<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt;  2 2017-01-02  7891011</span></a>
-<a class="sourceLine" id="cb8-9" data-line-number="9"><span class="co">#&gt;  3 2017-01-03 12131415</span></a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="co"># Send the query and get its result on R</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>df &lt;-<span class="st"> </span>q <span class="op">%&gt;%</span><span class="st"> </span>collect</span>
+<span id="cb8-3"><a href="#cb8-3"></a>df</span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">#&gt; # A tibble: 3 x 2</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="co">#&gt;          date        n</span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="co">#&gt;        &lt;date&gt;    &lt;int&gt;</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="co">#&gt;  1 2017-01-01   123456</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="co">#&gt;  2 2017-01-02  7891011</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="co">#&gt;  3 2017-01-03 12131415</span></span></code></pre></div>
 </div>
-<div id="translatable-functions" class="section level3">
-<h3>3.2 Translatable functions</h3>
+<div id="translatable-functions" class="section level2">
+<h2>5. Translatable functions</h2>
 <p>The package mainly use <strong>dbplyr</strong> to translate manipulations into queries.</p>
 <p><em>Translatable functions</em> are the available functions in manipulations that it can translate into SQL functions.</p>
 <p>For instance, <code>n()</code> is translated to <code>count(*)</code> in the above example.</p>
@@ -430,96 +494,84 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <li><a href="https://github.com/tidyverse/dbplyr/pull/43">Adds Teradata translation</a></li>
 </ul>
 <p>Here, we introduce the special translatable functions that it becomes available by <strong>dplyr.teradata</strong>.</p>
-<div id="lubridate-friendly-functions" class="section level4">
-<h4>3.2.1 <strong>lubridate</strong> friendly functions</h4>
-<p>⚠️ This has been supported by <strong>dbplyr</strong> 1.4.0. See <a href="https://github.com/tidyverse/dbplyr/blob/master/NEWS.md#sql-translations" class="uri">https://github.com/tidyverse/dbplyr/blob/master/NEWS.md#sql-translations</a>.</p>
-<p>You might familiar the <strong>lubridate</strong> package to manipulate date and time data.</p>
-<p><strong>dplyr.teradata</strong> has <strong>lubridate</strong> friendly functions:</p>
-<ul>
-<li><code>year()</code>, <code>month()</code>, <code>day()</code>, <code>hour()</code>, <code>minutes()</code> and <code>second()</code>.</li>
-</ul>
-<p>For example, you can pick year from date type column.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">mutate</span>(<span class="dt">year =</span> <span class="kw">year</span>(date_type_column))</a></code></pre></div>
-<p>Such as above manipulation is translated into SQL like following:</p>
-<pre><code>#&gt; &lt;SQL&gt; EXTRACT(year FROM `date_type_column`)</code></pre>
-</div>
-<div id="treat-boolean" class="section level4">
-<h4>3.2.2 Treat Boolean</h4>
-<p>Teradata does not have the boolean data type. So when we use boolean, we need to write some complex statements. The package has several functions to treat briefly.</p>
+<div id="treat-boolean" class="section level3">
+<h3>5.1. Treat Boolean</h3>
+<p>Teradata does not have the boolean data type. So when you use boolean, you need to write some complex statements. The package has several functions to treat it briefly.</p>
 <p><code>bool_to_int</code> transforms boolean to integer.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">mutate</span>(<span class="dt">is_positive =</span> <span class="kw">bool_to_int</span>(x <span class="op">&gt;</span><span class="st"> </span>0L))</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">mutate</span>(<span class="dt">is_positive =</span> <span class="kw">bool_to_int</span>(x <span class="op">&gt;</span><span class="st"> </span>0L))</span></code></pre></div>
 <pre><code>#&gt; &lt;SQL&gt; CASE WHEN (`x` &gt; 0) THEN 1 WHEN NOT(`x` &gt; 0) THEN 0 END</code></pre>
 <p><code>count_if()</code> or <code>n_if()</code> counts a number of rows satisfying a condition.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">count_if</span>(x <span class="op">&gt;</span><span class="st"> </span>0L))</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">summarize</span>(<span class="dt">n =</span> <span class="kw">count_if</span>(x <span class="op">&gt;</span><span class="st"> </span>0L))</span></code></pre></div>
 <pre><code>#&gt; &lt;SQL&gt; SUM(CASE WHEN (`x` &gt; 0) THEN 1 WHEN NOT(`x` &gt; 0) THEN 0 END)</code></pre>
 </div>
-<div id="to_timestamp" class="section level4">
-<h4>3.2.3 <code>to_timestamp()</code></h4>
-<p>If your table has a column stored UNIX time and you want to convert it to timestamp, you need to write complex SQL.</p>
+<div id="to_timestamp" class="section level3">
+<h3>5.2. <code>to_timestamp()</code></h3>
+<p>When your tables has some columns stored UNIX time and you want to convert it to timestamp, you need to write complex SQL.</p>
 <p><code>to_timestamp()</code> is a translatable function that makes it easy.</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="kw">mutate</span>(<span class="dt">ts =</span> <span class="kw">to_timestamp</span>(unixtime_column))</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">mutate</span>(<span class="dt">ts =</span> <span class="kw">to_timestamp</span>(unixtime_column))</span></code></pre></div>
 <p>Such as above manipulation is translated into SQL like following:</p>
-<pre><code>#&gt; &lt;SQL&gt; CAST(DATE '1970-01-01' + (`unixtime_column` / 86400) AS TIMESTAMP(0)) + (`unixtime_column` MOD 86400) * (INTERVAL '00:00:01' HOUR TO SECOND)</code></pre>
+<pre><code>#&gt; &lt;SQL&gt; CAST(DATE &#39;1970-01-01&#39; + (`unixtime_column` / 86400) AS TIMESTAMP(0)) + (`unixtime_column` MOD 86400) * (INTERVAL &#39;00:00:01&#39; HOUR TO SECOND)</code></pre>
 </div>
-<div id="cut" class="section level4">
-<h4>3.2.4 <code>cut()</code></h4>
+<div id="cut" class="section level3">
+<h3>5.3. <code>cut()</code></h3>
 <p><code>cut()</code> is very useful function that you can use in base R.</p>
 <p>For example, you want to cut values of <code>x</code> into three parts of ranges by break points 2 and 4:</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span></a>
-<a class="sourceLine" id="cb17-2" data-line-number="2">breaks &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>)</a>
-<a class="sourceLine" id="cb17-3" data-line-number="3"><span class="kw">cut</span>(x, breaks)</a>
-<a class="sourceLine" id="cb17-4" data-line-number="4"><span class="co">#&gt; [1] (0,2] (0,2] (2,4] (2,4] (4,6] (4,6]</span></a>
-<a class="sourceLine" id="cb17-5" data-line-number="5"><span class="co">#&gt; Levels: (0,2] (2,4] (4,6]</span></a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>x &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">6</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>breaks &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>)</span>
+<span id="cb15-3"><a href="#cb15-3"></a><span class="kw">cut</span>(x, breaks)</span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="co">#&gt; [1] (0,2] (0,2] (2,4] (2,4] (4,6] (4,6]</span></span>
+<span id="cb15-5"><a href="#cb15-5"></a><span class="co">#&gt; Levels: (0,2] (2,4] (4,6]</span></span></code></pre></div>
 <p><strong>dplyr.teradata</strong> has a translatable function similar to this:</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">breaks =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>)</a>
-<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">mutate</span>(<span class="dt">y =</span> <span class="kw">cut</span>(x, breaks))</a></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a>breaks =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>)</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="kw">mutate</span>(<span class="dt">y =</span> <span class="kw">cut</span>(x, breaks))</span></code></pre></div>
 <p>In the result, it is translated to a <code>CASE WHEN</code> statement as follows:</p>
 <pre><code>#&gt; &lt;SQL&gt; CASE
-#&gt;  WHEN x &gt; 0 AND x &lt;= 2 THEN '(0,2]'
-#&gt;  WHEN x &gt; 2 AND x &lt;= 4 THEN '(2,4]'
-#&gt;  WHEN x &gt; 4 AND x &lt;= 6 THEN '(4,6]'
+#&gt;  WHEN x &gt; 0 AND x &lt;= 2 THEN &#39;(0,2]&#39;
+#&gt;  WHEN x &gt; 2 AND x &lt;= 4 THEN &#39;(2,4]&#39;
+#&gt;  WHEN x &gt; 4 AND x &lt;= 6 THEN &#39;(4,6]&#39;
 #&gt;  ELSE NULL
 #&gt; END</code></pre>
 <p>Arguments of base <code>cut()</code> are also available:</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">breaks =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>)</a>
-<a class="sourceLine" id="cb20-2" data-line-number="2"><span class="kw">mutate</span>(<span class="dt">y =</span> <span class="kw">cut</span>(x, breaks, <span class="dt">labels =</span> <span class="st">&quot;-&quot;</span>, <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>breaks =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>)</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="kw">mutate</span>(<span class="dt">y =</span> <span class="kw">cut</span>(x, breaks, <span class="dt">labels =</span> <span class="st">&quot;-&quot;</span>, <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>))</span></code></pre></div>
 <pre><code>#&gt; &lt;SQL&gt; CASE
-#&gt;  WHEN x &gt;= 0 AND x &lt;= 2 THEN '0-2'
-#&gt;  WHEN x &gt; 2 AND x &lt;= 4 THEN '3-4'
-#&gt;  WHEN x &gt; 4 AND x &lt;= 6 THEN '5-6'
+#&gt;  WHEN x &gt;= 0 AND x &lt;= 2 THEN &#39;0-2&#39;
+#&gt;  WHEN x &gt; 2 AND x &lt;= 4 THEN &#39;3-4&#39;
+#&gt;  WHEN x &gt; 4 AND x &lt;= 6 THEN &#39;5-6&#39;
 #&gt;  ELSE NULL
 #&gt; END</code></pre>
 </div>
 </div>
-<div id="other-useful-functions" class="section level3">
-<h3>3.3 Other useful functions</h3>
-<div id="blob_to_string" class="section level4">
-<h4>3.3.1 <code>blob_to_string()</code></h4>
+<div id="other-useful-functions" class="section level2">
+<h2>6. Other useful functions</h2>
+<div id="blob_to_string" class="section level3">
+<h3>6.1. <code>blob_to_string()</code></h3>
 <p>The <code>blob</code> object from databases sometimes prevents manipulations with <strong>dplyr</strong>.</p>
 <p>You might want to convert them to string.</p>
 <p><code>blob_to_string()</code> is a function to make it easy:</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">x &lt;-<span class="st"> </span>blob<span class="op">::</span><span class="kw">as.blob</span>(<span class="st">&quot;Good morning&quot;</span>)</a>
-<a class="sourceLine" id="cb22-2" data-line-number="2">x</a>
-<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="co">#&gt; [1] blob[12 B]</span></a>
-<a class="sourceLine" id="cb22-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb22-5" data-line-number="5"><span class="co"># print raw data in blob</span></a>
-<a class="sourceLine" id="cb22-6" data-line-number="6">x[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb22-7" data-line-number="7"><span class="co">#&gt;  [1] 47 6f 6f 64 20 6d 6f 72 6e 69 6e 67</span></a>
-<a class="sourceLine" id="cb22-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb22-9" data-line-number="9"><span class="kw">blob_to_string</span>(x)</a>
-<a class="sourceLine" id="cb22-10" data-line-number="10"><span class="co">#&gt; [1] &quot;476f6f64206d6f726e696e67&quot;</span></a></code></pre></div>
-</div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>x &lt;-<span class="st"> </span>blob<span class="op">::</span><span class="kw">as_blob</span>(<span class="st">&quot;Good morning&quot;</span>)</span>
+<span id="cb20-2"><a href="#cb20-2"></a>x</span>
+<span id="cb20-3"><a href="#cb20-3"></a><span class="co">#&gt; &lt;blob[1]&gt;</span></span>
+<span id="cb20-4"><a href="#cb20-4"></a><span class="co">#&gt; [1] blob[12 B]</span></span>
+<span id="cb20-5"><a href="#cb20-5"></a></span>
+<span id="cb20-6"><a href="#cb20-6"></a><span class="co"># print raw data in blob</span></span>
+<span id="cb20-7"><a href="#cb20-7"></a>x[[<span class="dv">1</span>]]</span>
+<span id="cb20-8"><a href="#cb20-8"></a><span class="co">#&gt;  [1] 47 6f 6f 64 20 6d 6f 72 6e 69 6e 67</span></span>
+<span id="cb20-9"><a href="#cb20-9"></a></span>
+<span id="cb20-10"><a href="#cb20-10"></a><span class="kw">blob_to_string</span>(x)</span>
+<span id="cb20-11"><a href="#cb20-11"></a><span class="co">#&gt; [1] &quot;476f6f64206d6f726e696e67&quot;</span></span></code></pre></div>
 </div>
 </div>
 <div id="related-work" class="section level2">
-<h2>4 Related work</h2>
+<h2>7. Related work</h2>
 <ul>
 <li><a href="http://dbplyr.tidyverse.org/">A ‘dplyr’ Backend for Databases • dbplyr</a></li>
-<li><a href="https://github.com/xiaodaigh/teradata.dplyr">A Teradata backend for dplyr</a></li>
-<li><a href="https://gist.github.com/piccolbo/3d8ac40291f4eaee644b">Dplyr backends: the ultimate collection</a></li>
 </ul>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
