@@ -13,7 +13,7 @@ blob_to_string(blob)
 Convert blob to character.
 }
 \examples{
-(x <- blob::as.blob("Good morning"))
+(x <- blob::as_blob("Good morning"))
 #> [1] blob[12 B]
 x[[1]]
 #> [1] 47 6f 6f 64 20 6d 6f 72 6e 69 6e 67

@@ -128,15 +128,37 @@ sql_bool_to_int <- function(cond) {
 # Export dummy functions to make code completion work.
 # Note: cut has the original function base::cut
 
+#' Translatable function for 'LIKE' operator
+#' @param x column name
+#' @param pattern LIKE pattern
 #' @export
 like <- function(x, pattern) stop("unimplemented function")
+
+#' Translatable function to convert UNIX time to time-stamp
+#' @param x column name stored UNIX time (e.g. 1609459200)
+#' @return time-stamp (e.g. "2021-01-01 00:00:00")
 #' @export
 to_timestamp <- function(x) stop("unimplemented function")
+
+#' Translatable Function for '%%' operator
+#' @param x dividend
+#' @param divisor divisor
+#' @return modulo
 #' @export
 mod <- function(x, divisor) stop("unimplemented function")
+
+#' Translatable function to count rows satisfied a condition
+#' @param cond condition
 #' @export
 count_if <- function(cond) stop("unimplemented function")
+
+#' Translatable function to count rows satisfied a condition
+#' @param cond condition
 #' @export
 n_if <- function(cond) stop("unimplemented function")
+
+#' Translatable function to convert boolean to integer
+#' @param cond condition
+#' @return vector. 1 while cond is TRUE, 0 if FALSE
 #' @export
 bool_to_int <- function(cond) stop("unimplemented function")
