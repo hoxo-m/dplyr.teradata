@@ -59,7 +59,7 @@ knitr::opts_chunk$set(
 #  my_table <- tbl(con, "my_table_name")
 #  
 #  # Getting table in schema
-#  my_table <- tbl(con, "my_schema_name.my_table_name")
+#  my_table <- tbl(con, in_schema("my_schema", "my_table_name"))
 
 ## -----------------------------------------------------------------------------
 #  # Build a query

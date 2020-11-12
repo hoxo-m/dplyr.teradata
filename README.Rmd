@@ -1,14 +1,9 @@
 ---
-output:
-  md_document:
-    variant: gfm
-  html_document:
-    keep_md: false
+title: A Teradata Backend for dplyr
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-# A Teradata Backend for dplyr
 
 #### *Koji Makiyama (@hoxo-m)*
 

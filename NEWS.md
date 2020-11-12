@@ -1,4 +1,4 @@
-# dplyr.teradata 0.4.0
+# dplyr.teradata 0.4.1
 
 - Now supports for **dplyr** 1.0.0 and **dbplyr** 2.0.0 (#26)
 

@@ -105,7 +105,7 @@ con <- dbConnect(odbc(),
 
 Second, you need to specify a table to build SQL. See:
 
-- [Introduction to dbplyr • dbplyr](http://dbplyr.tidyverse.org/articles/dbplyr.html).
+- [Introduction to dbplyr • dbplyr](https://dbplyr.tidyverse.org/articles/dbplyr.html).
 
 To specify a table, you can use `tbl()`:
 
@@ -114,12 +114,12 @@ To specify a table, you can use `tbl()`:
 my_table <- tbl(con, "my_table_name")
 
 # Getting table in schema
-my_table <- tbl(con, "my_schema_name.my_table_name")
+my_table <- tbl(con, in_schema("my_schema", "my_table_name"))
 ```
 
 Third, you build queries. It can do in the same way as manipulating data frames with **dplyr**:
 
-- [A Grammar of Data Manipulation • dplyr](http://dplyr.tidyverse.org/).
+- [A Grammar of Data Manipulation • dplyr](https://dplyr.tidyverse.org/).
 
 For example, you can use follows:
 
@@ -287,4 +287,4 @@ blob_to_string(x)
 
 ## 7. Related work
 
-- [A 'dplyr' Backend for Databases • dbplyr](http://dbplyr.tidyverse.org/)
+- [A 'dplyr' Backend for Databases • dbplyr](https://dbplyr.tidyverse.org/)

@@ -1,7 +1,7 @@
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 A Teradata Backend for dplyr
-============================
+================
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 #### *Koji Makiyama (@hoxo-m)*
 
@@ -16,8 +16,7 @@ Version](https://www.r-pkg.org/badges/version-ago/dplyr.teradata)](https://cran.
 Status](https://img.shields.io/coveralls/hoxo-m/dplyr.teradata.svg)](https://coveralls.io/github/hoxo-m/dplyr.teradata)
 <!-- badges: end -->
 
-1. Overview
------------
+## 1. Overview
 
 The package provides a Teradata backend for **dplyr**.
 
@@ -60,8 +59,7 @@ df
 #>  3 2017-01-03 12131415
 ```
 
-2. Installation
----------------
+## 2. Installation
 
 You can install the **dplyr.teradata** package from CRAN.
 
@@ -80,8 +78,7 @@ The source code for **dplyr.teradata** package is available on GitHub at
 
 -   <https://github.com/hoxo-m/dplyr.teradata>.
 
-3. Motivation
--------------
+## 3. Motivation
 
 The package provides a Teradata backend for **dplyr**. It makes it
 possible to build SQL for [Teradata
@@ -93,8 +90,7 @@ Therefore, you can complete data analysis with Teradata only on R. It
 means that you are freed from troublesome switching of tools and
 switching thoughts that cause mistakes.
 
-4. Usage
---------
+## 4. Usage
 
 The package uses the **odbc** package to connect database and the
 **dbplyr** package to build SQL.
@@ -181,8 +177,7 @@ df
 #>  3 2017-01-03 12131415
 ```
 
-5. Translatable functions
--------------------------
+## 5. Translatable functions
 
 The package mainly use **dbplyr** to translate manipulations into
 queries.
@@ -282,8 +277,7 @@ mutate(y = cut(x, breaks, labels = "-", include.lowest = TRUE))
     #>  ELSE NULL
     #> END
 
-6. Other useful functions
--------------------------
+## 6. Other useful functions
 
 ### 6.1. `blob_to_string()`
 
@@ -308,8 +302,7 @@ blob_to_string(x)
 #> [1] "476f6f64206d6f726e696e67"
 ```
 
-7. Related work
----------------
+## 7. Related work
 
 -   [A ‘dplyr’ Backend for Databases •
     dbplyr](https://dbplyr.tidyverse.org/)
