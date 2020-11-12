@@ -12,7 +12,7 @@ NULL
 #' Driver for an Teradata ODBC database.
 #'
 #' @export
-#' @import methods odbc DBI
+#' @import methods odbc DBI bit64
 #' @examples
 #' \dontrun{
 #' todbc()

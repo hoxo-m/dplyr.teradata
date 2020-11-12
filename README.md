@@ -1,6 +1,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# A Teradata Backend for dplyr
+A Teradata Backend for dplyr
+============================
 
 #### *Koji Makiyama (@hoxo-m)*
 
@@ -9,14 +10,14 @@
 [![Travis-CI Build
 Status](https://travis-ci.org/hoxo-m/dplyr.teradata.svg?branch=master)](https://travis-ci.org/hoxo-m/dplyr.teradata)
 [![CRAN
-Version](http://www.r-pkg.org/badges/version-ago/dplyr.teradata)](https://cran.r-project.org/package=dplyr.teradata)
-[![CRAN
-Downloads](http://cranlogs.r-pkg.org/badges/dplyr.teradata)](http://cranlogs.r-pkg.org/badges/dplyr.teradata/)
+Version](https://www.r-pkg.org/badges/version-ago/dplyr.teradata)](https://cran.r-project.org/package=dplyr.teradata)
+[![](https://cranlogs.r-pkg.org/badges/dplyr.teradata)](https://cran.r-project.org/package=dplyr.teradata)
 [![Coverage
-Status](https://img.shields.io/coveralls/hoxo-m/dplyr.teradata.svg)](https://coveralls.io/r/hoxo-m/dplyr.teradata?branch=master)
+Status](https://img.shields.io/coveralls/hoxo-m/dplyr.teradata.svg)](https://coveralls.io/github/hoxo-m/dplyr.teradata)
 <!-- badges: end -->
 
-## 1\. Overview
+1. Overview
+-----------
 
 The package provides a Teradata backend for **dplyr**.
 
@@ -59,7 +60,8 @@ df
 #>  3 2017-01-03 12131415
 ```
 
-## 2\. Installation
+2. Installation
+---------------
 
 You can install the **dplyr.teradata** package from CRAN.
 
@@ -76,9 +78,10 @@ devtools::install_github("hoxo-m/dplyr.teradata")
 
 The source code for **dplyr.teradata** package is available on GitHub at
 
-  - <https://github.com/hoxo-m/dplyr.teradata>.
+-   <https://github.com/hoxo-m/dplyr.teradata>.
 
-## 3\. Motivation
+3. Motivation
+-------------
 
 The package provides a Teradata backend for **dplyr**. It makes it
 possible to build SQL for [Teradata
@@ -90,17 +93,16 @@ Therefore, you can complete data analysis with Teradata only on R. It
 means that you are freed from troublesome switching of tools and
 switching thoughts that cause mistakes.
 
-## 4\. Usage
+4. Usage
+--------
 
 The package uses the **odbc** package to connect database and the
 **dbplyr** package to build SQL.
 
 First, you need to establish an ODBC connection to Teradata. See:
 
-  - [README - **odbc**
+-   [README - **odbc**
     package](https://CRAN.R-project.org/package=odbc/readme/README.html).
-
-<!-- end list -->
 
 ``` r
 # Establish a connection to Teradata
@@ -111,8 +113,8 @@ con <- dbConnect(odbc(),
 
 Second, you need to specify a table to build SQL. See:
 
-  - [Introduction to dbplyr •
-    dbplyr](http://dbplyr.tidyverse.org/articles/dbplyr.html).
+-   [Introduction to dbplyr •
+    dbplyr](https://dbplyr.tidyverse.org/articles/dbplyr.html).
 
 To specify a table, you can use `tbl()`:
 
@@ -121,25 +123,23 @@ To specify a table, you can use `tbl()`:
 my_table <- tbl(con, "my_table_name")
 
 # Getting table in schema
-my_table <- tbl(con, "my_schema_name.my_table_name")
+my_table <- tbl(con, in_schema("my_schema", "my_table_name"))
 ```
 
 Third, you build queries. It can do in the same way as manipulating data
 frames with **dplyr**:
 
-  - [A Grammar of Data Manipulation •
-    dplyr](http://dplyr.tidyverse.org/).
+-   [A Grammar of Data Manipulation •
+    dplyr](https://dplyr.tidyverse.org/).
 
 For example, you can use follows:
 
-  - `mutate()` adds new *columns* that are functions of existing
+-   `mutate()` adds new *columns* that are functions of existing
     *columns*.
-  - `select()` picks *columns* based on their names.
-  - `filter()` picks *rows* based on their values.
-  - `summarise()` reduces multiple values down to a single summary.
-  - `arrange()` changes the ordering of the rows.
-
-<!-- end list -->
+-   `select()` picks *columns* based on their names.
+-   `filter()` picks *rows* based on their values.
+-   `summarise()` reduces multiple values down to a single summary.
+-   `arrange()` changes the ordering of the rows.
 
 ``` r
 # Build a query
@@ -181,7 +181,8 @@ df
 #>  3 2017-01-03 12131415
 ```
 
-## 5\. Translatable functions
+5. Translatable functions
+-------------------------
 
 The package mainly use **dbplyr** to translate manipulations into
 queries.
@@ -193,7 +194,7 @@ For instance, `n()` is translated to `count(*)` in the above example.
 
 To know translatable functions for Teradata, refer the following:
 
-  - [Adds Teradata
+-   [Adds Teradata
     translation](https://github.com/tidyverse/dbplyr/pull/43)
 
 Here, we introduce the special translatable functions that it becomes
@@ -281,7 +282,8 @@ mutate(y = cut(x, breaks, labels = "-", include.lowest = TRUE))
     #>  ELSE NULL
     #> END
 
-## 6\. Other useful functions
+6. Other useful functions
+-------------------------
 
 ### 6.1. `blob_to_string()`
 
@@ -306,7 +308,8 @@ blob_to_string(x)
 #> [1] "476f6f64206d6f726e696e67"
 ```
 
-## 7\. Related work
+7. Related work
+---------------
 
-  - [A ‘dplyr’ Backend for Databases •
-    dbplyr](http://dbplyr.tidyverse.org/)
+-   [A ‘dplyr’ Backend for Databases •
+    dbplyr](https://dbplyr.tidyverse.org/)
