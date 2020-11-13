@@ -28,7 +28,7 @@ in the same way as manipulating data frames with **dplyr**.
 library(dplyr.teradata)
 
 # Establish a connection to Teradata
-con <- dbConnect(todbc(), 
+con <- dbConnect(odbc(), 
                  driver = "{Teradata Driver}", DBCName = "host_name_or_IP_address",
                  uid = "user_name", pwd = "*****")
 my_table <- tbl(con, "my_table_name")
@@ -70,8 +70,8 @@ install.packages("dplyr.teradata")
 You can also install the development version of the package from GitHub.
 
 ``` r
-install.packages("devtools") # if you have not installed "devtools" package
-devtools::install_github("hoxo-m/dplyr.teradata")
+install.packages("remotes") # if you have not installed "remotes" package
+remotes::install_github("hoxo-m/dplyr.teradata")
 ```
 
 The source code for **dplyr.teradata** package is available on GitHub at
