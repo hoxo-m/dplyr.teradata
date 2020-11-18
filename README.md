@@ -306,3 +306,4 @@ blob_to_string(x)
 
 -   [A ‘dplyr’ Backend for Databases •
     dbplyr](https://dbplyr.tidyverse.org/)
+-   [tdplyr - Teradata R Package](https://github.com/Teradata/tdplyr)
