@@ -270,11 +270,23 @@ mutate(y = cut(x, breaks, labels = "-", include.lowest = TRUE))
 trans(cut(x, c(0, 2, 4, 6), labels = "-", include.lowest = TRUE))
 ```
 
-## 6. Other useful functions
+## 6. Miscellaneous
 
-### 6.1. `blob_to_string()`
+### 6.1. Sampling Data
 
-The `blob` object from databases sometimes prevents manipulations with **dplyr**.
+```{r}
+q <- my_table %>% sample_n(100L)
+
+show_query(q)
+#> <SQL>
+#> SELECT *
+#> FROM "my_table_name"
+#> SAMPLE 100
+```
+
+### 6.2. `blob_to_string()`
+
+The `blob` objects from databases sometimes prevents manipulations with **dplyr**.
 
 You might want to convert them to string.
 
@@ -293,4 +305,5 @@ blob_to_string(x)
 ## 7. Related work
 
 - [A 'dplyr' Backend for Databases • dbplyr](https://dbplyr.tidyverse.org/)
+- [Teradata Vantage™ SQL Data Manipulation Language](https://docs.teradata.com/r/b8dd8xEYJnxfsq4uFRrHQQ/7CvqIbRdnlAZNyaVKhlZTg)
 - [tdplyr - Teradata R Package](https://github.com/Teradata/tdplyr)

@@ -9,7 +9,7 @@
 
 ## Improvements
 
-- Export dummy functions (`like`, `to_timestamp`, `mod`, `count_if`, `n_if` and `bool_to_int`) to make code completion work (#29). These functions can only be used inside the functions to build queries (e.g. `mutate`).
+- Export dummy functions (`like`, `to_timestamp`, `mod`, `count_if`, `n_if`, and `bool_to_int`) to make code completion work (#29). These functions can only be used inside the functions to build queries (e.g. `mutate`).
 
 # dplyr.teradata 0.3.2
 
