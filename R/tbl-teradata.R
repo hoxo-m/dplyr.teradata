@@ -7,7 +7,7 @@ sample_n.tbl_Teradata <- function(tbl, size, replace = FALSE, weight = NULL,
                                   .env = NULL, randomized_allocation = TRUE,
                                   ...) {
   size <- as.integer(size)
-  stopifnot(size > 0L)
+  stopifnot(size >= 1L)
   if (!is.null(weight) || !is.null(.env)) {
     warning("sample_n() has not implemented for arguments weight and .env")
   }
@@ -25,6 +25,29 @@ sample_frac.tbl_Teradata <- function(tbl, size = 1, replace = FALSE,
     warning("sample_frac() has not implemented for arguments weight and .env")
   }
   sample_impl(tbl, size, replace, randomized_allocation)
+}
+
+#' @importFrom dplyr slice_sample
+#' @export
+slice_sample.tbl_Teradata <- function(.data, ..., randomized_allocation = TRUE,
+                                      n, prop, weight_by = NULL, replace = FALSE) {
+  if (missing(n) && missing(prop)) {
+    n <- 1L
+  }
+  if (!is.null(weight_by)) {
+    warning("slice_sample() has not implemented for the argument 'weight_by'.")
+  }
+  size <- NULL
+  if (missing(prop)) {
+    n <- as.integer(n)
+    stopifnot(n >= 1L)
+    size <- n
+  } else {
+    prop <- as.double(prop)
+    stopifnot(0.0 < prop, prop < 1.0)
+    size <- prop
+  }
+  sample_impl(.data, size, replace, randomized_allocation)
 }
 
 sample_impl <- function(tbl, size, replace, randomized_allocation) {
