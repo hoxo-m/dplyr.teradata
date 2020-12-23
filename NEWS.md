@@ -1,3 +1,9 @@
+# dplyr.teradata 0.4.1.9001
+
+## New features
+
+- Add `sample_frac()` and `slice_sample()`.
+
 # dplyr.teradata 0.4.1
 
 - Now supports for **dplyr** 1.0.0 and **dbplyr** 2.0.0 (#26)

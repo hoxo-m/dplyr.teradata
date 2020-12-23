@@ -281,14 +281,70 @@ mutate(y = cut(x, breaks, labels = "-", include.lowest = TRUE))
 
 ### 6.1. Sampling Data
 
+Teradata supports sampling rows from tables:
+
+-   [SAMPLE
+    Clause](https://docs.teradata.com/r/b8dd8xEYJnxfsq4uFRrHQQ/hyfVBxhz8aKKK1HS77zXnA),
+
+and **dplyr** has the same purpose verb `slice_sample()`. The package
+makes them work well.
+
+For example, by the number of rows:
+
 ``` r
-q <- my_table %>% sample_n(100L)
+q <- my_table %>% slice_sample(n = 100L)
+
+show_query(q)
+#> <SQL>
+#> SELECT *
+#> FROM "my_table_name"
+#> SAMPLE RANDOMIZED ALLOCATION 100
+```
+
+or by the proportion of rows:
+
+``` r
+q <- my_table %>% slice_sample(prop = 0.1)
+
+show_query(q)
+#> <SQL>
+#> SELECT *
+#> FROM "my_table_name"
+#> SAMPLE RANDOMIZED ALLOCATION 0.1
+```
+
+It also supports sampling with replacement:
+
+``` r
+q <- my_table %>% slice_sample(n = 100L, replace = TRUE)
+
+show_query(q)
+#> <SQL>
+#> SELECT *
+#> FROM "my_table_name"
+#> SAMPLE WITH REPLACEMENT RANDOMIZED ALLOCATION 100
+```
+
+and supports a random sample stratified by AMPs (it is much faster,
+especially for very large samples):
+
+``` r
+q <- my_table %>% slice_sample(n = 100L, randomized_allocation = FALSE)
 
 show_query(q)
 #> <SQL>
 #> SELECT *
 #> FROM "my_table_name"
 #> SAMPLE 100
+```
+
+The package currently supports the verbs old versions.
+
+``` r
+# By the number of rows
+q <- my_table %>% sample_n(100L)
+# By the proportion of rows
+q <- my_table %>% sample_frac(0.1)
 ```
 
 ### 6.2. `blob_to_string()`
