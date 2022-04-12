@@ -6,8 +6,13 @@ test_that("custom scalar translated correctly", {
     translate_sql(!!enquo(x), con = simulate_teradata())
   }
 
-  expect_equal(trans(case_when(x == 1L ~ 1L, x == 2L ~ 2L, TRUE ~ 3L)),
+  if (packageVersion("dbplyr") <= "2.1.1") {
+    expect_equal(trans(case_when(x == 1L ~ 1L, x == 2L ~ 2L, TRUE ~ 3L)),
                sql('CASE\nWHEN (`x` = 1) THEN (1)\nWHEN (`x` = 2) THEN (2)\nELSE (3)\nEND'))
+  } else {
+    expect_equal(trans(case_when(x == 1L ~ 1L, x == 2L ~ 2L, TRUE ~ 3L)),
+               sql('CASE WHEN (`x` = 1) THEN 1 WHEN (`x` = 2) THEN 2 ELSE 3 END'))
+  }
   expect_equal(trans(cut(x, 1:3)),
                sql("CASE\n WHEN x > 1 AND x <= 2 THEN '(1,2]'\n WHEN x > 2 AND x <= 3 THEN '(2,3]'\n ELSE NULL\nEND"))
   expect_equal(trans(like(x, "%pattern_")), sql("`x` LIKE '%pattern_'"))
